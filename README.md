@@ -41,7 +41,7 @@ Para iniciá-lo, siga os passos abaixo:
 $ yarn
 
 # Buildar o projeto
-$ yarn start
+$ yarn build
 
 # Iniciar o projeto
 $ yarn preview

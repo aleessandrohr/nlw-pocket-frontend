@@ -50,6 +50,9 @@ export const CreateGoal = ({ setOpen }: Props) => {
 		queryClient.invalidateQueries({
 			queryKey: ["get-pending-goals"],
 		});
+		queryClient.invalidateQueries({
+			queryKey: ["get-summary"],
+		});
 
 		reset();
 
