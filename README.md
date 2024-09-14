@@ -1,50 +1,73 @@
-# React + TypeScript + Vite
+# React + TypeScript + Vite + TailwindCSS + Biome
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Adicione atividades que te fazem bem e que você quer continuar
+praticando toda semana.
 
-Currently, two official plugins are available:
+<p align="center">
+  <img alt="in.orbit" src="./src/assets/logo.svg" >
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<br>
 
-## Expanding the ESLint configuration
+<h1 align="center">
+	<img alt="in.orbit" src="./src/assets/cover.png" />
+</h1>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 🧪 Tecnologias
 
-- Configure the top-level `parserOptions` property like this:
+Esse projeto foi desenvolvido com as seguintes tecnologias:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- [React](https://reactjs.org)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Biome](https://biomejs.dev/)
+
+Para mais detalhes, veja o **[package.json](./package.json)**.
+
+## 🚀 Como executar
+
+Como pré-requisitos, é necessário instalar o [Node](https://nodejs.org/en/) e o [Yarn](https://classic.yarnpkg.com/en/docs/install/) em suas versões LTS.
+
+Cumprindo os pré-requisitos, clone o projeto e acesse a pasta clonada.
+
+```bash
+$ git clone https://github.com/aleessandrohr/nlw-pocket-frontend
+$ cd nlw-pocket-frontend
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Para iniciá-lo, siga os passos abaixo:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+```bash
+# Instalar as dependências
+$ yarn
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+# Buildar o projeto
+$ yarn start
+
+# Iniciar o projeto
+$ yarn preview
 ```
+
+O app estará disponível no seu browser pelo endereço [http://localhost:4173](http://localhost:4173).
+
+## 💻 Projeto
+
+Adicione atividades que te fazem bem e que você quer continuar
+praticando toda semana.
+
+Este é um projeto desenvolvido durante a **[Next Level Week Together](https://nextlevelweek.com/)**, apresentada dos dias 09 a 12 de setembro de 2024.
+
+## 🔖 Layout
+
+Você pode visualizar o layout do projeto através do link abaixo:
+
+- [Layout Web](https://www.figma.com/community/file/1415093862269754302/nlw-pocket-js-in-orbit)
+
+Lembrando que você precisa ter uma conta no [Figma](https://figma.com/).
+
+## 📝 License
+
+Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
+
+---
