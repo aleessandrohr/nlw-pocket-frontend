@@ -34,7 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				ref={ref}
 				className={cn(
 					button({ variant, size, className }),
-					props.disabled && "opacity-50"
+					props.disabled && "cursor-not-allowed opacity-50"
 				)}
 			/>
 		);

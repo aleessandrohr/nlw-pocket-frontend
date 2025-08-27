@@ -71,7 +71,7 @@ export const CreateGoal = ({ setOpen }: Props) => {
 			<div className="flex flex-col gap-6 h-full">
 				<div className="flex flex-col gap-3">
 					<div className="flex items-center justify-between">
-						<DialogTitle>Cadastrar mseta</DialogTitle>
+						<DialogTitle>Cadastrar meta</DialogTitle>
 						<DialogClose>
 							<X className="size-5 text-zinc-600" />
 						</DialogClose>
@@ -82,7 +82,7 @@ export const CreateGoal = ({ setOpen }: Props) => {
 					</DialogDescription>
 				</div>
 				<form
-					className="flex flex-col justify-between flex-1 gap-2"
+					className="flex flex-col justify-between flex-1 gap-2 overflow-y-auto"
 					onSubmit={handleSubmit(handleOnSubmit)}
 				>
 					<div className="flex flex-col gap-6">
@@ -124,7 +124,7 @@ export const CreateGoal = ({ setOpen }: Props) => {
 							/>
 						</div>
 					</div>
-					<div className="flex items-center gap-3">
+					<div className="flex items-center gap-3 sticky bottom-0 z-10 bg-zinc-950">
 						<DialogClose asChild>
 							<Button type="button" variant="secondary" className="flex-1">
 								Fechar
