@@ -71,7 +71,7 @@ export const CreateGoal = ({ setOpen }: Props) => {
 			<div className="flex flex-col gap-6 h-full">
 				<div className="flex flex-col gap-3">
 					<div className="flex items-center justify-between">
-						<DialogTitle>Cadastrar meta</DialogTitle>
+						<DialogTitle>Cadastrar mseta</DialogTitle>
 						<DialogClose>
 							<X className="size-5 text-zinc-600" />
 						</DialogClose>
