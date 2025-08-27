@@ -32,7 +32,7 @@ export const DialogContent = (props: DialogPrimitive.DialogContentProps) => {
 
 			<DialogPrimitive.DialogContent
 				{...props}
-				className="fixed z-[60] right-0 top-0 bottom-0 max-w-[400px] w-full h-screen border-l border-zinc-900 bg-zinc-950 p-8"
+				className="fixed z-[60] right-0 top-0 bottom-0 max-w-[400px] w-full h-dvh border-l border-zinc-900 bg-zinc-950 p-8"
 			/>
 		</DialogPortal>
 	);
