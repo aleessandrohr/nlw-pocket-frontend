@@ -48,16 +48,30 @@ export const Summary = () => {
 
 	return (
 		<div className="py-10 max-w-[480px] px-5 mx-auto flex flex-col gap-6">
-			<div className="flex items-center justify-between">
+			<div className="flex items-end justify-between">
 				<div className="flex items-center gap-6">
 					<InOrbitIcon />
 					<span className="text-lg font-semibold capitalize">
 						{firstDayOfWeek} - {lastDayOfWeek}
 					</span>
 				</div>
-				<div className="flex items-center gap-2">
+				<div className="flex items-end gap-2 justify-end flex-col md:flex-row">
+					<Button
+						variant="secondary"
+						data-tooltip-id="tooltip"
+						data-tooltip-content="Sair"
+						disabled={logoutMutation.isPending || logoutMutation.isSuccess}
+						onClick={() => logoutMutation.mutate()}
+						className="block md:hidden"
+					>
+						{logoutMutation.isPending ? (
+							<Loader2 className="animate-spin" />
+						) : (
+							<LogOut />
+						)}
+					</Button>
 					<DialogTrigger asChild>
-						<Button>
+						<Button className="truncate">
 							<Plus className="size-4" size="sm" />
 							Cadastrar meta
 						</Button>
@@ -68,6 +82,7 @@ export const Summary = () => {
 						data-tooltip-content="Sair"
 						disabled={logoutMutation.isPending || logoutMutation.isSuccess}
 						onClick={() => logoutMutation.mutate()}
+						className="hidden md:block"
 					>
 						{logoutMutation.isPending ? (
 							<Loader2 className="animate-spin" />

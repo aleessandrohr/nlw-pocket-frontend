@@ -60,7 +60,7 @@ export const CreateUserRoute = () => {
 	};
 
 	return (
-		<div className="flex justify-center items-center h-screen flex-col gap-8">
+		<div className="flex justify-center items-center h-screen flex-col gap-8 px-5">
 			<img src={logo} alt="in.orbit" />
 			<form
 				onSubmit={form.handleSubmit(handleOnSubmit)}
