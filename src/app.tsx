@@ -1,24 +1,25 @@
-import { Dialog } from "@/components/ui/dialog";
-import { CreateGoal } from "@/components/CreateGoal";
-import { EmptyGoals } from "@/components/EmptyGoals";
-import { Summary } from "@/components/Summary";
-import { useQuery } from "@tanstack/react-query";
-import { getSummary } from "@/http/get-summary";
-import { useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { BrowserRouter } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import { AuthProvider } from "./contexts/auth";
+import { RoutesProvider } from "./routes";
 
 export const App = () => {
-	const [open, setOpen] = useState(false);
-
-	const { data: summary } = useQuery({
-		queryKey: ["get-summary"],
-		queryFn: getSummary,
-		staleTime: 1000 * 60, // 60 seconds
-	});
-
 	return (
-		<Dialog open={open} defaultOpen={false} onOpenChange={setOpen}>
-			{summary && summary.total > 0 ? <Summary /> : <EmptyGoals />}
-			<CreateGoal setOpen={setOpen} />
-		</Dialog>
+		<BrowserRouter>
+			<AuthProvider>
+				<RoutesProvider />
+			</AuthProvider>
+			<Toaster
+				toastOptions={{
+					duration: 3000, // 3 seconds
+					style: {
+						background: "#18181B",
+						color: "#F4F4F5",
+					},
+				}}
+			/>
+			<Tooltip id="tooltip" />
+		</BrowserRouter>
 	);
 };

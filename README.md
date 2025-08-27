@@ -38,13 +38,13 @@ Para iniciá-lo, siga os passos abaixo:
 
 ```bash
 # Instalar as dependências
-$ yarn
+$ bun
 
 # Buildar o projeto
-$ yarn build
+$ bun build
 
 # Iniciar o projeto
-$ yarn preview
+$ bun preview
 ```
 
 O app estará disponível no seu browser pelo endereço [http://localhost:4173](http://localhost:4173).

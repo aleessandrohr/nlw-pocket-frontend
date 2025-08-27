@@ -1,18 +1,23 @@
-import { CheckCircle2, Plus } from "lucide-react";
+import { PendingGoals } from "@/components/pending-goals";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { InOrbitIcon } from "@/components/ui/in-orbit-icon";
 import { Progress, ProgressIndicator } from "@/components/ui/progress-bar";
 import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
-import { getSummary } from "@/http/get-summary";
+import { useAuth } from "@/contexts/auth";
+import { logout } from "@/http/auth/logout";
+import { getSummary } from "@/http/summary/get-summary";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import ptBR from "dayjs/locale/pt-br";
-import { PendingGoals } from "@/components/PendingGoals";
+import { CheckCircle2, Loader2, LogOut, Plus } from "lucide-react";
+import toast from "react-hot-toast";
 
 dayjs.locale(ptBR);
 
 export const Summary = () => {
+	const { logoutInMemory } = useAuth();
+
 	const { data: summary } = useQuery({
 		queryKey: ["get-summary"],
 		queryFn: getSummary,
@@ -20,6 +25,19 @@ export const Summary = () => {
 	});
 
 	if (!summary) return null;
+
+	const logoutMutation = useMutation({
+		mutationFn: logout,
+		onSuccess: () => {
+			toast.success("Saiu com sucesso");
+			logoutMutation.reset();
+
+			logoutInMemory();
+		},
+		onError: () => {
+			toast.error("Erro ao sair");
+		},
+	});
 
 	const firstDayOfWeek = dayjs().startOf("week").format("D MMM");
 	const lastDayOfWeek = dayjs().endOf("week").format("D MMM");
@@ -37,12 +55,27 @@ export const Summary = () => {
 						{firstDayOfWeek} - {lastDayOfWeek}
 					</span>
 				</div>
-				<DialogTrigger asChild>
-					<Button>
-						<Plus className="size-4" size="sm" />
-						Cadastrar meta
+				<div className="flex items-center gap-2">
+					<DialogTrigger asChild>
+						<Button>
+							<Plus className="size-4" size="sm" />
+							Cadastrar meta
+						</Button>
+					</DialogTrigger>
+					<Button
+						variant="secondary"
+						data-tooltip-id="tooltip"
+						data-tooltip-content="Sair"
+						disabled={logoutMutation.isPending || logoutMutation.isSuccess}
+						onClick={() => logoutMutation.mutate()}
+					>
+						{logoutMutation.isPending ? (
+							<Loader2 className="animate-spin" />
+						) : (
+							<LogOut />
+						)}
 					</Button>
-				</DialogTrigger>
+				</div>
 			</div>
 			<div className="flex flex-col gap-3">
 				<Progress value={summary.completed} max={summary.total}>

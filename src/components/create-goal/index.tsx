@@ -1,26 +1,27 @@
+import { Button } from "@/components/ui/button";
 import {
-	DialogContent,
-	DialogTitle,
 	DialogClose,
+	DialogContent,
 	DialogDescription,
+	DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
 	RadioGroup,
 	RadioGroupIndicator,
 	RadioGroupItem,
 } from "@/components/ui/radio-group";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { createGoal } from "@/http/goals/create-goal";
 import {
-	createGoalFormSchema,
 	type CreateGoalForm,
+	createGoalFormSchema,
 } from "@/schemas/create-goal-form";
-import { createGoal } from "@/http/create-goal";
-import { useQueryClient } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2, X } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
 interface Props {
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,29 +35,35 @@ export const CreateGoal = ({ setOpen }: Props) => {
 			resolver: zodResolver(createGoalFormSchema),
 		});
 
+	const createGoalMutation = useMutation({
+		mutationFn: createGoal,
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["get-pending-goals"],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ["get-summary"],
+			});
+			toast.success("Meta cadastrada com sucesso");
+			createGoalMutation.reset();
+
+			reset();
+
+			setOpen(false);
+		},
+		onError: () => {
+			toast.error("Erro ao cadastrar meta");
+		},
+	});
+
 	const handleOnSubmit = async ({
 		title,
 		desiredWeeklyFrequency,
 	}: CreateGoalForm) => {
-		const response = await createGoal({
+		createGoalMutation.mutate({
 			title,
 			desiredWeeklyFrequency,
 		});
-
-		if (!response.ok) {
-			throw new Error("goal not created");
-		}
-
-		queryClient.invalidateQueries({
-			queryKey: ["get-pending-goals"],
-		});
-		queryClient.invalidateQueries({
-			queryKey: ["get-summary"],
-		});
-
-		reset();
-
-		setOpen(false);
 	};
 
 	return (
@@ -124,11 +131,22 @@ export const CreateGoal = ({ setOpen }: Props) => {
 							</Button>
 						</DialogClose>
 						<Button
-							disabled={!formState.isValid}
+							disabled={
+								!formState.isValid ||
+								createGoalMutation.isPending ||
+								createGoalMutation.isSuccess
+							}
 							type="submit"
 							className="flex-1"
 						>
-							Salvar
+							{createGoalMutation.isPending ? (
+								<>
+									<Loader2 className="w-4 h-4 animate-spin" />
+									Salvando...
+								</>
+							) : (
+								"Salvar"
+							)}
 						</Button>
 					</div>
 				</form>

@@ -1,4 +1,4 @@
-import { env } from "@/schemas/env";
+import { api } from "@/services/api";
 
 interface Goal {
 	id: string;
@@ -15,8 +15,14 @@ interface GoalsInWeek {
 }
 
 export const getSummary = async (): Promise<GoalsInWeek> => {
-	const response = await fetch(`${env.VITE_BACKEND_URL}/summary`);
-	const data = await response.json();
+	try {
+		const response = await api.get<GoalsInWeek>("/summary");
 
-	return data;
+		const data = response.data;
+		return data;
+	} catch (error) {
+		console.error(error);
+
+		throw error;
+	}
 };
