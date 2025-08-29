@@ -47,7 +47,7 @@ $ bun build
 $ bun preview
 ```
 
-O app estará disponível no seu browser pelo endereço [http://localhost:4173](http://localhost:4173).
+O app estará disponível no seu browser pelo endereço [http://localhost:4173](http://localhost:3001).
 
 ## 💻 Projeto
 
