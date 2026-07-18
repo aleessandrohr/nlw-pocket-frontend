@@ -67,7 +67,6 @@ export const LoginRoute = () => {
 						placeholder="Senha"
 						{...form.register("password")}
 					/>
-					{password && <PasswordStrengthChecklist password={password} />}
 					{form.formState.errors.password && (
 						<p className="text-red-400 text-sm">
 							{form.formState.errors.password.message}
