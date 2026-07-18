@@ -1,16 +1,16 @@
-import { useAuth } from "@/contexts/auth";
-import { Navigate } from "react-router-dom";
+import { Navigate } from 'react-router-dom'
+import { useAuth } from '@/contexts/auth'
 
 interface NotAuthenticatedRouteProps {
-	children: React.ReactNode;
+	children: React.ReactNode
 }
 
 export const NotAuthenticatedRoute = ({
 	children,
 }: NotAuthenticatedRouteProps) => {
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated } = useAuth()
 
-	if (isAuthenticated) return <Navigate to="/" replace />;
+	if (isAuthenticated) return <Navigate to="/" replace />
 
-	return children;
-};
+	return children
+}

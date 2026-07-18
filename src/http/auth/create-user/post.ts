@@ -1,14 +1,14 @@
-import type { User } from "@/contexts/auth";
-import { env } from "@/schemas/env";
-import axios from "axios";
+import axios from 'axios'
+import type { User } from '@/contexts/auth'
+import { env } from '@/schemas/env'
 
 interface LoginRequest {
-	name: string;
-	email: string;
-	password: string;
+	name: string
+	email: string
+	password: string
 }
 
-type LoginResponse = User;
+type LoginResponse = User
 
 export const createUser = async ({ name, email, password }: LoginRequest) => {
 	try {
@@ -22,15 +22,15 @@ export const createUser = async ({ name, email, password }: LoginRequest) => {
 			{
 				withCredentials: true,
 			}
-		);
+		)
 
-		return response.data;
+		return response.data
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	} catch (error: any) {
-		console.error(error);
+		console.error(error)
 
 		throw {
 			message: error?.message,
-		};
+		}
 	}
-};
+}

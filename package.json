@@ -6,7 +6,11 @@
 	"scripts": {
 		"dev": "vite --port 3001",
 		"build": "tsc -b && vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"biome:lint": "biome lint",
+		"biome:check": "biome check",
+		"biome:fix": "biome check --fix",
+		"biome:format": "biome format"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.9.0",
@@ -29,7 +33,7 @@
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.0",
+		"@biomejs/biome": "^2.5.4",
 		"@eslint/js": "^9.9.0",
 		"@types/node": "^22.5.4",
 		"@types/react": "^18.3.3",

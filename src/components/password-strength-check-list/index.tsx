@@ -1,7 +1,7 @@
-import { Check, X } from "lucide-react";
+import { Check, X } from 'lucide-react'
 
 interface PasswordStrengthChecklistProps {
-	password: string;
+	password: string
 }
 
 export const PasswordStrengthChecklist = ({
@@ -9,26 +9,26 @@ export const PasswordStrengthChecklist = ({
 }: PasswordStrengthChecklistProps) => {
 	const checks = [
 		{
-			label: "Pelo menos 8 caracteres",
+			label: 'Pelo menos 8 caracteres',
 			isValid: password.length >= 8,
 		},
 		{
-			label: "Pelo menos uma letra minúscula",
+			label: 'Pelo menos uma letra minúscula',
 			isValid: /[a-z]/.test(password),
 		},
 		{
-			label: "Pelo menos uma letra maiúscula",
+			label: 'Pelo menos uma letra maiúscula',
 			isValid: /[A-Z]/.test(password),
 		},
 		{
-			label: "Pelo menos um número",
+			label: 'Pelo menos um número',
 			isValid: /\d/.test(password),
 		},
 		{
-			label: "Pelo menos um caractere especial (@$!%*?&)",
+			label: 'Pelo menos um caractere especial (@$!%*?&)',
 			isValid: /[@$!%*?&]/.test(password),
 		},
-	];
+	]
 
 	return (
 		<ul className="flex flex-col gap-1">
@@ -39,11 +39,11 @@ export const PasswordStrengthChecklist = ({
 					) : (
 						<X className="h-4 w-4 text-red-400" />
 					)}
-					<p className={check.isValid ? "text-green-400" : "text-zinc-400"}>
+					<p className={check.isValid ? 'text-green-400' : 'text-zinc-400'}>
 						{check.label}
 					</p>
 				</li>
 			))}
 		</ul>
-	);
-};
+	)
+}

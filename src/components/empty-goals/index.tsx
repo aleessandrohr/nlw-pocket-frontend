@@ -1,34 +1,34 @@
-import letsStart from "@/assets/lets-start-illustration.svg";
-import logo from "@/assets/logo.svg";
-import { Button } from "@/components/ui/button";
-import { DialogTrigger } from "@/components/ui/dialog";
-import { useAuth } from "@/contexts/auth";
-import { logout } from "@/http/auth/logout";
-import { useMutation } from "@tanstack/react-query";
-import { Loader2, LogOut, Plus } from "lucide-react";
-import toast from "react-hot-toast";
+import { useMutation } from '@tanstack/react-query'
+import { Loader2, LogOut, Plus } from 'lucide-react'
+import toast from 'react-hot-toast'
+import letsStart from '@/assets/lets-start-illustration.svg'
+import logo from '@/assets/logo.svg'
+import { Button } from '@/components/ui/button'
+import { DialogTrigger } from '@/components/ui/dialog'
+import { useAuth } from '@/contexts/auth'
+import { logout } from '@/http/auth/logout'
 
 export const EmptyGoals = () => {
-	const { logoutInMemory } = useAuth();
+	const { logoutInMemory } = useAuth()
 
 	const logoutMutation = useMutation({
 		mutationFn: logout,
 		onSuccess: () => {
-			toast.success("Saiu com sucesso");
-			logoutMutation.reset();
+			toast.success('Saiu com sucesso')
+			logoutMutation.reset()
 
-			logoutInMemory();
+			logoutInMemory()
 		},
 		onError: () => {
-			toast.error("Erro ao sair");
+			toast.error('Erro ao sair')
 		},
-	});
+	})
 
 	return (
-		<div className="h-dvh flex flex-col items-center justify-center gap-8">
+		<div className="flex h-dvh flex-col items-center justify-center gap-8">
 			<img src={logo} alt="in.orbit" />
 			<img src={letsStart} alt="in.orbit" />
-			<p className="text-zinc-300 leading-relaxed  max-w-80 text-center">
+			<p className="max-w-80 text-center text-zinc-300 leading-relaxed">
 				Você ainda não cadastrou nenhuma meta, que tal cadastrar um agora mesmo?
 			</p>
 			<div className="flex items-center gap-2">
@@ -53,5 +53,5 @@ export const EmptyGoals = () => {
 				</Button>
 			</div>
 		</div>
-	);
-};
+	)
+}

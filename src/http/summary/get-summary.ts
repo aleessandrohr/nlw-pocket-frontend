@@ -1,28 +1,28 @@
-import { api } from "@/services/api";
+import { api } from '@/services/api'
 
 interface Goal {
-	id: string;
-	title: string;
-	completedAt: Date;
+	id: string
+	title: string
+	completedAt: Date
 }
 
 interface GoalsInWeek {
-	completed: number;
-	total: number;
+	completed: number
+	total: number
 	goalsPerDay: {
-		[date: string]: Array<Goal>;
-	};
+		[date: string]: Array<Goal>
+	}
 }
 
 export const getSummary = async (): Promise<GoalsInWeek> => {
 	try {
-		const response = await api.get<GoalsInWeek>("/summary");
+		const response = await api.get<GoalsInWeek>('/summary')
 
-		const data = response.data;
-		return data;
+		const data = response.data
+		return data
 	} catch (error) {
-		console.error(error);
+		console.error(error)
 
-		throw error;
+		throw error
 	}
-};
+}

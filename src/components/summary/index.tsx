@@ -1,61 +1,61 @@
-import { PendingGoals } from "@/components/pending-goals";
-import { Button } from "@/components/ui/button";
-import { DialogTrigger } from "@/components/ui/dialog";
-import { InOrbitIcon } from "@/components/ui/in-orbit-icon";
-import { Progress, ProgressIndicator } from "@/components/ui/progress-bar";
-import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/contexts/auth";
-import { logout } from "@/http/auth/logout";
-import { getSummary } from "@/http/summary/get-summary";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import ptBR from "dayjs/locale/pt-br";
-import { CheckCircle2, Loader2, LogOut, Plus } from "lucide-react";
-import toast from "react-hot-toast";
+import { useMutation, useQuery } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import ptBR from 'dayjs/locale/pt-br'
+import { CheckCircle2, Loader2, LogOut, Plus } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { PendingGoals } from '@/components/pending-goals'
+import { Button } from '@/components/ui/button'
+import { DialogTrigger } from '@/components/ui/dialog'
+import { InOrbitIcon } from '@/components/ui/in-orbit-icon'
+import { Progress, ProgressIndicator } from '@/components/ui/progress-bar'
+import { Separator } from '@/components/ui/separator'
+import { useAuth } from '@/contexts/auth'
+import { logout } from '@/http/auth/logout'
+import { getSummary } from '@/http/summary/get-summary'
 
-dayjs.locale(ptBR);
+dayjs.locale(ptBR)
 
 export const Summary = () => {
-	const { logoutInMemory } = useAuth();
-
-	const { data: summary } = useQuery({
-		queryKey: ["get-summary"],
-		queryFn: getSummary,
-		staleTime: 1000 * 60, // 60 seconds
-	});
-
-	if (!summary) return null;
+	const { logoutInMemory } = useAuth()
 
 	const logoutMutation = useMutation({
 		mutationFn: logout,
 		onSuccess: () => {
-			toast.success("Saiu com sucesso");
-			logoutMutation.reset();
+			toast.success('Saiu com sucesso')
+			logoutMutation.reset()
 
-			logoutInMemory();
+			logoutInMemory()
 		},
 		onError: () => {
-			toast.error("Erro ao sair");
+			toast.error('Erro ao sair')
 		},
-	});
+	})
 
-	const firstDayOfWeek = dayjs().startOf("week").format("D MMM");
-	const lastDayOfWeek = dayjs().endOf("week").format("D MMM");
+	const { data: summary } = useQuery({
+		queryKey: ['get-summary'],
+		queryFn: getSummary,
+		staleTime: 1000 * 60, // 60 seconds
+	})
+
+	if (!summary) return null
+
+	const firstDayOfWeek = dayjs().startOf('week').format('D MMM')
+	const lastDayOfWeek = dayjs().endOf('week').format('D MMM')
 
 	const completedPercentage = Math.round(
 		(summary.completed * 100) / summary.total
-	);
+	)
 
 	return (
-		<div className="py-10 max-w-[480px] px-5 mx-auto flex flex-col gap-6">
+		<div className="mx-auto flex max-w-[480px] flex-col gap-6 px-5 py-10">
 			<div className="flex items-end justify-between">
 				<div className="flex items-center gap-6">
 					<InOrbitIcon />
-					<span className="text-lg font-semibold capitalize">
+					<span className="font-semibold text-lg capitalize">
 						{firstDayOfWeek} - {lastDayOfWeek}
 					</span>
 				</div>
-				<div className="flex items-end gap-2 justify-end flex-col md:flex-row">
+				<div className="flex flex-col items-end justify-end gap-2 md:flex-row">
 					<Button
 						variant="secondary"
 						data-tooltip-id="tooltip"
@@ -96,10 +96,10 @@ export const Summary = () => {
 				<Progress value={summary.completed} max={summary.total}>
 					<ProgressIndicator style={{ width: `${completedPercentage}%` }} />
 				</Progress>
-				<div className="flex items-center justify-between text-zinc-400 text-xs">
+				<div className="flex items-center justify-between text-xs text-zinc-400">
 					<span>
-						Você completou{" "}
-						<span className="text-zinc-100">{summary.completed}</span> de{" "}
+						Você completou{' '}
+						<span className="text-zinc-100">{summary.completed}</span> de{' '}
 						<span className="text-zinc-100">{summary.total}</span> metas nessa
 						semana.
 					</span>
@@ -108,23 +108,23 @@ export const Summary = () => {
 				<Separator />
 				<PendingGoals />
 				<div className="flex flex-col gap-6">
-					<h2 className="text-xl font-medium">Sua semana</h2>
+					<h2 className="font-medium text-xl">Sua semana</h2>
 					{summary.goalsPerDay &&
 						Object.entries(summary.goalsPerDay).map(([date, goals]) => {
-							const weekDay = dayjs(date).format("dddd");
-							const formattedDate = dayjs(date).format("D [de] MMMM");
+							const weekDay = dayjs(date).format('dddd')
+							const formattedDate = dayjs(date).format('D [de] MMMM')
 
 							return (
 								<div key={date} className="flex flex-col gap-4">
 									<h3 className="font-medium">
-										<span className="capitalize">{weekDay}</span>{" "}
-										<span className="text-zinc-400 text-xs">
+										<span className="capitalize">{weekDay}</span>{' '}
+										<span className="text-xs text-zinc-400">
 											({formattedDate})
 										</span>
 									</h3>
 									<ul className="flex flex-col gap-3">
 										{goals.map(goal => {
-											const time = dayjs(goal.completedAt).format("HH:mm");
+											const time = dayjs(goal.completedAt).format('HH:mm')
 
 											return (
 												<li key={goal.id} className="flex items-center gap-2">
@@ -135,14 +135,14 @@ export const Summary = () => {
 														às <span className="text-zinc-100">{time}</span>
 													</span>
 												</li>
-											);
+											)
 										})}
 									</ul>
 								</div>
-							);
+							)
 						})}
 				</div>
 			</div>
 		</div>
-	);
-};
+	)
+}

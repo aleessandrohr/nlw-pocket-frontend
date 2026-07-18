@@ -1,20 +1,20 @@
-import type { CreateGoalForm } from "@/schemas/create-goal-form";
-import { api } from "@/services/api";
+import type { CreateGoalForm } from '@/schemas/create-goal-form'
+import { api } from '@/services/api'
 
 export const createGoal = async ({
 	title,
 	desiredWeeklyFrequency,
 }: CreateGoalForm) => {
 	try {
-		const response = await api.post("/goal", {
+		const response = await api.post('/goal', {
 			title,
 			desiredWeeklyFrequency,
-		});
+		})
 
-		return response.data;
+		return response.data
 	} catch (error) {
-		console.error(error);
+		console.error(error)
 
-		throw error;
+		throw error
 	}
-};
+}

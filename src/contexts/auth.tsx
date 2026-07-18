@@ -1,31 +1,31 @@
-import { Loading } from "@/components/loading";
-import { getCsrfToken } from "@/http/auth/csrf-token/get";
-import { getUserProfile } from "@/http/user/get";
-import { setCsrfTokenInMemory } from "@/services/api";
 import {
-	type ReactNode,
 	createContext,
+	type ReactNode,
 	useCallback,
 	useContext,
 	useEffect,
 	useState,
-} from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+} from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Loading } from '@/components/loading'
+import { getCsrfToken } from '@/http/auth/csrf-token/get'
+import { getUserProfile } from '@/http/user/get'
+import { setCsrfTokenInMemory } from '@/services/api'
 
 export interface User {
-	id: string;
-	name: string;
-	email: string;
-	updatedAt: string;
-	createdAt: string;
+	id: string
+	name: string
+	email: string
+	updatedAt: string
+	createdAt: string
 }
 
 interface AuthContextType {
-	user: User | null | undefined;
-	loginInMemory: (user: User, csrfToken: string, redirect?: boolean) => void;
-	logoutInMemory: (redirectTo?: string) => void;
-	isLoading: boolean;
-	isAuthenticated: boolean;
+	user: User | null | undefined
+	loginInMemory: (user: User, csrfToken: string, redirect?: boolean) => void
+	logoutInMemory: (redirectTo?: string) => void
+	isLoading: boolean
+	isAuthenticated: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -34,74 +34,74 @@ const AuthContext = createContext<AuthContextType>({
 	logoutInMemory: () => {},
 	isLoading: true,
 	isAuthenticated: false,
-});
+})
 
 interface AuthProviderProps {
-	children: ReactNode;
+	children: ReactNode
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-	const navigate = useNavigate();
-	const location = useLocation();
+	const navigate = useNavigate()
+	const location = useLocation()
 
-	const [user, setUser] = useState<User | null | undefined>(undefined);
-	const [csrfToken, setCsrfToken] = useState<string | null>(null);
+	const [user, setUser] = useState<User | null | undefined>(undefined)
+	const [csrfToken, setCsrfToken] = useState<string | null>(null)
 
 	const loginInMemory = useCallback(
 		async (user: User, csrfToken: string, redirect = true) => {
-			setUser(user);
-			setCsrfToken(csrfToken);
+			setUser(user)
+			setCsrfToken(csrfToken)
 
-			if (!redirect) return;
+			if (!redirect) return
 
-			navigate("/", { replace: true });
+			navigate('/', { replace: true })
 		},
 		[navigate]
-	);
+	)
 
 	const logoutInMemory = useCallback(
-		(redirectTo = "/auth/login") => {
-			setUser(null);
-			setCsrfToken(null);
+		(redirectTo = '/auth/login') => {
+			setUser(null)
+			setCsrfToken(null)
 
 			if (
-				location.pathname === "/auth/create-user" ||
-				location.pathname === "/auth/login"
+				location.pathname === '/auth/create-user' ||
+				location.pathname === '/auth/login'
 			)
-				return;
+				return
 
-			navigate(redirectTo, { replace: true });
+			navigate(redirectTo, { replace: true })
 		},
 		[location.pathname, navigate]
-	);
+	)
 
 	useEffect(() => {
-		if (user !== undefined) return;
+		if (user !== undefined) return
 
 		const checkSession = async () => {
 			try {
-				const user = await getUserProfile();
-				const { csrfToken } = await getCsrfToken();
+				const user = await getUserProfile()
+				const { csrfToken } = await getCsrfToken()
 
-				loginInMemory(user, csrfToken, false);
-			} catch (error) {
-				logoutInMemory();
+				loginInMemory(user, csrfToken, false)
+			} catch (_error) {
+				logoutInMemory()
 			}
-		};
+		}
 
-		checkSession();
-	}, [logoutInMemory, loginInMemory, user]);
+		checkSession()
+	}, [logoutInMemory, loginInMemory, user])
 
 	useEffect(() => {
-		if (!csrfToken) return;
+		if (!csrfToken) return
 
-		setCsrfTokenInMemory(csrfToken);
-	}, [csrfToken]);
+		setCsrfTokenInMemory(csrfToken)
+	}, [csrfToken])
 
-	const isLoading = user === undefined;
-	const isAuthenticated = !!user;
+	const isLoading = user === undefined
+	const isAuthenticated = !!user
 
-	if (isLoading) return <Loading />;
+	if (isLoading) return <Loading />
 
 	return (
 		<AuthContext.Provider
@@ -115,18 +115,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		>
 			{children}
 		</AuthContext.Provider>
-	);
+	)
 }
 
 export const useAuth = () => {
-	const context = useContext(AuthContext);
+	const context = useContext(AuthContext)
 
 	if (!context) {
-		throw new Error("useAuth must be used within an AuthProvider");
+		throw new Error('useAuth must be used within an AuthProvider')
 	}
 
 	const { user, loginInMemory, logoutInMemory, isLoading, isAuthenticated } =
-		context;
+		context
 
 	return {
 		user,
@@ -134,5 +134,5 @@ export const useAuth = () => {
 		logoutInMemory,
 		isLoading,
 		isAuthenticated,
-	};
-};
+	}
+}

@@ -1,25 +1,25 @@
-import { AuthenticatedRoute } from "@/components/authenticated-route";
-import { NotAuthenticatedRoute } from "@/components/not-authenticated-route";
-import { useAuth } from "@/contexts/auth";
-import { useEffect } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { Logout } from "./private/auth/logout";
-import { SummaryRoute } from "./private/summary";
-import { ProfileRoute } from "./private/user/profile";
-import { CreateUserRoute } from "./public/auth/create-user";
-import { LoginRoute } from "./public/auth/login";
+import { useEffect } from 'react'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { AuthenticatedRoute } from '@/components/authenticated-route'
+import { NotAuthenticatedRoute } from '@/components/not-authenticated-route'
+import { useAuth } from '@/contexts/auth'
+import { Logout } from './private/auth/logout'
+import { SummaryRoute } from './private/summary'
+import { ProfileRoute } from './private/user/profile'
+import { CreateUserRoute } from './public/auth/create-user'
+import { LoginRoute } from './public/auth/login'
 
 export const RoutesProvider = () => {
-	const { isAuthenticated } = useAuth();
-	const navigate = useNavigate();
-	const location = useLocation();
+	const { isAuthenticated } = useAuth()
+	const navigate = useNavigate()
+	const location = useLocation()
 
 	useEffect(() => {
-		if (location.pathname === "/") {
-			if (isAuthenticated) navigate("/summary", { replace: true });
-			else navigate("/auth/login", { replace: true });
+		if (location.pathname === '/') {
+			if (isAuthenticated) navigate('/summary', { replace: true })
+			else navigate('/auth/login', { replace: true })
 		}
-	}, [location.pathname, isAuthenticated, navigate]);
+	}, [location.pathname, isAuthenticated, navigate])
 
 	return (
 		<Routes>
@@ -64,5 +64,5 @@ export const RoutesProvider = () => {
 				}
 			/>
 		</Routes>
-	);
-};
+	)
+}

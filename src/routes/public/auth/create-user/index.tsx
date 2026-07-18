@@ -1,38 +1,38 @@
-import logo from "@/assets/logo.svg";
-import { PasswordStrengthChecklist } from "@/components/password-strength-check-list";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/auth";
-import { createUser } from "@/http/auth/create-user/post";
-import { getCsrfToken } from "@/http/auth/csrf-token/get";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
+import logo from '@/assets/logo.svg'
+import { PasswordStrengthChecklist } from '@/components/password-strength-check-list'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useAuth } from '@/contexts/auth'
+import { createUser } from '@/http/auth/create-user/post'
+import { getCsrfToken } from '@/http/auth/csrf-token/get'
 import {
 	type CreateUserForm,
 	createUserFormSchema,
-} from "@/schemas/create-user-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+} from '@/schemas/create-user-form'
 
 export const CreateUserRoute = () => {
-	const { loginInMemory, logoutInMemory } = useAuth();
+	const { loginInMemory, logoutInMemory } = useAuth()
 
 	const form = useForm<CreateUserForm>({
 		defaultValues: {
-			name: "",
-			email: "",
-			password: "",
-			confirmPassword: "",
+			name: '',
+			email: '',
+			password: '',
+			confirmPassword: '',
 		},
 		resolver: zodResolver(createUserFormSchema),
-	});
+	})
 
-	const password = form.watch("password");
-	const confirmPassword = form.watch("confirmPassword");
+	const password = form.watch('password')
+	const confirmPassword = form.watch('confirmPassword')
 
-	const isPasswordMatch = password === confirmPassword;
+	const isPasswordMatch = password === confirmPassword
 
 	const createUserMutation = useMutation({
 		mutationFn: (data: CreateUserForm) =>
@@ -42,51 +42,51 @@ export const CreateUserRoute = () => {
 				password: data.password,
 			}),
 		onSuccess: async user => {
-			toast.success("Usuário criado com sucesso");
+			toast.success('Usuário criado com sucesso')
 
-			const { csrfToken } = await getCsrfToken();
+			const { csrfToken } = await getCsrfToken()
 
-			loginInMemory(user, csrfToken);
+			loginInMemory(user, csrfToken)
 		},
 		onError: () => {
-			toast.error("Erro ao criar usuário");
+			toast.error('Erro ao criar usuário')
 
-			logoutInMemory();
+			logoutInMemory()
 		},
-	});
+	})
 
 	const handleOnSubmit = (data: CreateUserForm) => {
-		createUserMutation.mutate(data);
-	};
+		createUserMutation.mutate(data)
+	}
 
 	return (
-		<div className="flex justify-center items-center h-dvh flex-col gap-8 px-5">
+		<div className="flex h-dvh flex-col items-center justify-center gap-8 px-5">
 			<img src={logo} alt="in.orbit" />
 			<form
 				onSubmit={form.handleSubmit(handleOnSubmit)}
-				className="flex flex-col items-center gap-4 justify-center w-full max-w-sm"
+				className="flex w-full max-w-sm flex-col items-center justify-center gap-4"
 			>
-				<div className="w-full flex flex-col gap-2">
-					<Input placeholder="Nome" {...form.register("name")} />
+				<div className="flex w-full flex-col gap-2">
+					<Input placeholder="Nome" {...form.register('name')} />
 					{form.formState.errors.name && (
 						<p className="text-red-400 text-sm">
 							{form.formState.errors.name.message}
 						</p>
 					)}
 				</div>
-				<div className="w-full flex flex-col gap-2">
-					<Input placeholder="Email" {...form.register("email")} />
+				<div className="flex w-full flex-col gap-2">
+					<Input placeholder="Email" {...form.register('email')} />
 					{form.formState.errors.email && (
 						<p className="text-red-400 text-sm">
 							{form.formState.errors.email.message}
 						</p>
 					)}
 				</div>
-				<div className="w-full flex flex-col gap-2">
+				<div className="flex w-full flex-col gap-2">
 					<Input
 						type="password"
 						placeholder="Senha"
-						{...form.register("password")}
+						{...form.register('password')}
 					/>
 					{password && <PasswordStrengthChecklist password={password} />}
 					{form.formState.errors.password && (
@@ -95,11 +95,11 @@ export const CreateUserRoute = () => {
 						</p>
 					)}
 				</div>
-				<div className="w-full flex flex-col gap-2">
+				<div className="flex w-full flex-col gap-2">
 					<Input
 						type="password"
 						placeholder="Confirmar senha"
-						{...form.register("confirmPassword")}
+						{...form.register('confirmPassword')}
 					/>
 					{password && !isPasswordMatch && (
 						<p className="text-red-400 text-sm">As senhas não coincidem</p>
@@ -107,18 +107,18 @@ export const CreateUserRoute = () => {
 				</div>
 				<Button
 					type="submit"
-					className="self-start w-full"
+					className="w-full self-start"
 					disabled={
 						createUserMutation.isPending || createUserMutation.isSuccess
 					}
 				>
 					{createUserMutation.isPending ? (
 						<>
-							<Loader2 className="w-4 h-4 animate-spin" />
+							<Loader2 className="h-4 w-4 animate-spin" />
 							Criando usuário...
 						</>
 					) : (
-						"Criar usuário"
+						'Criar usuário'
 					)}
 				</Button>
 				<div className="flex items-center gap-1">
@@ -129,5 +129,5 @@ export const CreateUserRoute = () => {
 				</div>
 			</form>
 		</div>
-	);
-};
+	)
+}

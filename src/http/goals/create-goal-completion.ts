@@ -1,15 +1,15 @@
-import { api } from "@/services/api";
+import { api } from '@/services/api'
 
 export const createGoalCompletion = async (goalId: string) => {
 	try {
-		const response = await api.post("/completion", {
+		const response = await api.post('/completion', {
 			goalId,
-		});
+		})
 
-		return response.data;
+		return response.data
 	} catch (error) {
-		console.error(error);
+		console.error(error)
 
-		throw error;
+		throw error
 	}
-};
+}

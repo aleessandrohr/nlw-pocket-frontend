@@ -1,71 +1,68 @@
-import logo from "@/assets/logo.svg";
-import { PasswordStrengthChecklist } from "@/components/password-strength-check-list";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/auth";
-import { getCsrfToken } from "@/http/auth/csrf-token/get";
-import { login } from "@/http/auth/login/post";
-import { type LoginForm, loginFormSchema } from "@/schemas/login-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
+import logo from '@/assets/logo.svg'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useAuth } from '@/contexts/auth'
+import { getCsrfToken } from '@/http/auth/csrf-token/get'
+import { login } from '@/http/auth/login/post'
+import { type LoginForm, loginFormSchema } from '@/schemas/login-form'
 
 export const LoginRoute = () => {
-	const { loginInMemory, logoutInMemory } = useAuth();
+	const { loginInMemory, logoutInMemory } = useAuth()
 
 	const form = useForm<LoginForm>({
 		defaultValues: {
-			email: "",
-			password: "",
+			email: '',
+			password: '',
 		},
 		resolver: zodResolver(loginFormSchema),
-	});
-
-	const password = form.watch("password");
+	})
 
 	const loginMutation = useMutation({
 		mutationFn: (data: LoginForm) => login(data),
 		onSuccess: async user => {
-			toast.success("Entrou com sucesso");
+			toast.success('Entrou com sucesso')
 
-			const { csrfToken } = await getCsrfToken();
+			const { csrfToken } = await getCsrfToken()
 
-			loginInMemory(user, csrfToken);
+			loginInMemory(user, csrfToken)
 		},
 		onError: () => {
-			toast.error("Email ou senha inválidos");
+			toast.error('Email ou senha inválidos')
 
-			logoutInMemory();
+			logoutInMemory()
 		},
-	});
+	})
 
 	const handleOnSubmit = (data: LoginForm) => {
-		loginMutation.mutate(data);
-	};
+		loginMutation.mutate(data)
+	}
 
 	return (
-		<div className="flex justify-center items-center h-dvh flex-col gap-8 px-5">
+		<div className="flex h-dvh flex-col items-center justify-center gap-8 px-5">
 			<img src={logo} alt="in.orbit" />
 			<form
 				onSubmit={form.handleSubmit(handleOnSubmit)}
-				className="flex flex-col items-center gap-4 justify-center w-full max-w-sm"
+				className="flex w-full max-w-sm flex-col items-center justify-center gap-4"
 			>
-				<div className="w-full flex flex-col gap-2">
-					<Input placeholder="Email" {...form.register("email")} />
+				<div className="flex w-full flex-col gap-2">
+					<Input placeholder="Email" {...form.register('email')} />
 					{form.formState.errors.email && (
 						<p className="text-red-400 text-sm">
 							{form.formState.errors.email.message}
 						</p>
 					)}
 				</div>
-				<div className="w-full flex flex-col gap-2">
+				<div className="flex w-full flex-col gap-2">
 					<Input
 						type="password"
 						placeholder="Senha"
-						{...form.register("password")}
+						{...form.register('password')}
 					/>
 					{form.formState.errors.password && (
 						<p className="text-red-400 text-sm">
@@ -75,16 +72,16 @@ export const LoginRoute = () => {
 				</div>
 				<Button
 					type="submit"
-					className="self-start w-full"
+					className="w-full self-start"
 					disabled={loginMutation.isPending || loginMutation.isSuccess}
 				>
 					{loginMutation.isPending ? (
 						<>
-							<Loader2 className="w-4 h-4 animate-spin" />
+							<Loader2 className="h-4 w-4 animate-spin" />
 							Entrando...
 						</>
 					) : (
-						"Entrar"
+						'Entrar'
 					)}
 				</Button>
 				<div className="flex items-center gap-1">
@@ -95,5 +92,5 @@ export const LoginRoute = () => {
 				</div>
 			</form>
 		</div>
-	);
-};
+	)
+}

@@ -1,43 +1,43 @@
-import { OutlineButton } from "@/components/ui/outline-button";
-import { createGoalCompletion } from "@/http/goals/create-goal-completion";
-import { getPendingGoals } from "@/http/goals/get-pending-goals";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Plus } from 'lucide-react'
+import { toast } from 'react-hot-toast'
+import { OutlineButton } from '@/components/ui/outline-button'
+import { createGoalCompletion } from '@/http/goals/create-goal-completion'
+import { getPendingGoals } from '@/http/goals/get-pending-goals'
 
 export const PendingGoals = () => {
-	const queryClient = useQueryClient();
+	const queryClient = useQueryClient()
 
 	const { data: pendingGoals } = useQuery({
-		queryKey: ["get-pending-goals"],
+		queryKey: ['get-pending-goals'],
 		queryFn: getPendingGoals,
-	});
+	})
 
 	const createGoalCompletionMutation = useMutation({
 		mutationFn: createGoalCompletion,
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ["get-summary"],
-			});
+				queryKey: ['get-summary'],
+			})
 			queryClient.invalidateQueries({
-				queryKey: ["get-pending-goals"],
-			});
-			toast.success("Meta completada com sucesso");
-			createGoalCompletionMutation.reset();
+				queryKey: ['get-pending-goals'],
+			})
+			toast.success('Meta completada com sucesso')
+			createGoalCompletionMutation.reset()
 		},
 		onError: () => {
-			toast.error("Erro ao completar meta");
+			toast.error('Erro ao completar meta')
 		},
-	});
+	})
 
 	const handleCompleteGoal = async (goalId: string) => {
-		createGoalCompletionMutation.mutate(goalId);
-	};
+		createGoalCompletionMutation.mutate(goalId)
+	}
 
-	if (!pendingGoals) return null;
+	if (!pendingGoals) return null
 
 	return (
-		<div className="flex gap-3 flex-wrap">
+		<div className="flex flex-wrap gap-3">
 			{pendingGoals?.map(goal => {
 				return (
 					<OutlineButton
@@ -52,8 +52,8 @@ export const PendingGoals = () => {
 						<Plus className="size-4 text-zinc-600" />
 						{goal.title}
 					</OutlineButton>
-				);
+				)
 			})}
 		</div>
-	);
-};
+	)
+}

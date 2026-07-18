@@ -1,21 +1,21 @@
-import { useAuth } from "@/contexts/auth";
-import { logout } from "@/http/auth/logout";
-import { useEffect } from "react";
+import { useEffect } from 'react'
+import { useAuth } from '@/contexts/auth'
+import { logout } from '@/http/auth/logout'
 
 export function Logout() {
-	const { logoutInMemory } = useAuth();
+	const { logoutInMemory } = useAuth()
 
 	useEffect(() => {
 		const removeSession = async () => {
 			try {
-				await logout();
+				await logout()
 			} finally {
-				logoutInMemory();
+				logoutInMemory()
 			}
-		};
+		}
 
-		removeSession();
-	}, [logoutInMemory]);
+		removeSession()
+	}, [logoutInMemory])
 
-	return null;
+	return null
 }
