@@ -1,71 +1,60 @@
-# React + TypeScript + Vite + TailwindCSS + Biome
+# in.orbit — Frontend
 
-Adicione atividades que te fazem bem e que você quer continuar
-praticando toda semana.
+Aplicação web do in.orbit para acompanhar metas semanais, registrar conclusões
+e visualizar o resumo da semana.
 
 <p align="center">
-  <img alt="in.orbit" src="./src/assets/logo.svg" >
+  <img alt="in.orbit" src="./src/assets/logo.svg" width="180">
 </p>
 
-<h1 align="center">
-	<img alt="in.orbit" src="./src/assets/cover.png" />
-</h1>
+## Stack
 
-## 🧪 Tecnologias
+- React 18 e TypeScript
+- Vite
+- React Router DOM
+- TanStack Query
+- Axios
+- React Hook Form e Zod
+- Tailwind CSS 3
+- Biome
 
-Esse projeto foi desenvolvido com as seguintes tecnologias:
+## Documentação
 
-- [React](https://reactjs.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/)
-- [TailwindCSS](https://tailwindcss.com/)
-- [Biome](https://biomejs.dev/)
+- [Visão geral](./docs/overview.md)
+- [Autenticação e API](./docs/auth-and-api.md)
+- [Rotas](./docs/routing.md)
+- [HTTP e queries](./docs/http-and-queries.md)
+- [Configurações](./docs/configs.md)
+- [Build e execução](./docs/build-and-run.md)
+- [Datas e horários](./docs/date-and-time.md)
+- [Estrutura de `src`](./docs/src-structure-and-conventions.md)
+- [Estilo e UI](./docs/styling-and-ui.md)
+- [Design system](./docs/design-system.md)
+- [Changelog](./docs/changelog.md)
+- [Instruções compartilhadas](../nlw-pocket-docs/instructions.md)
 
-Para mais detalhes, veja o **[package.json](./package.json)**.
+## Execução local
 
-## 🚀 Como executar
-
-Como pré-requisitos, é necessário instalar o [Node](https://nodejs.org/en/) e o [Yarn](https://classic.yarnpkg.com/en/docs/install/) em suas versões LTS.
-
-Cumprindo os pré-requisitos, clone o projeto e acesse a pasta clonada.
-
-```bash
-$ git clone https://github.com/aleessandrohr/nlw-pocket-frontend
-$ cd nlw-pocket-frontend
+```sh
+bun install
+bun run dev
 ```
 
-Para iniciá-lo, siga os passos abaixo:
+O Vite inicia em `http://localhost:3001`. A API esperada é definida por
+`VITE_BACKEND_URL` em `.env.local`; use `.env.example` como modelo.
 
-```bash
-# Instalar as dependências
-$ bun
+Para gerar e servir o build:
 
-# Buildar o projeto
-$ bun build
-
-# Iniciar o projeto
-$ bun preview
+```sh
+bun run build
+bun run preview
 ```
 
-O app estará disponível no seu browser pelo endereço [http://localhost:4173](http://localhost:3001).
+O `vercel.json` mantém o fallback para `index.html`, necessário às rotas do
+SPA.
 
-## 💻 Projeto
+## Origem
 
-Adicione atividades que te fazem bem e que você quer continuar
-praticando toda semana.
-
-Este é um projeto desenvolvido durante a **[Next Level Week Together](https://nextlevelweek.com/)**, apresentada dos dias 09 a 12 de setembro de 2024.
-
-## 🔖 Layout
-
-Você pode visualizar o layout do projeto através do link abaixo:
-
-- [Layout Web](https://www.figma.com/community/file/1415093862269754302/nlw-pocket-js-in-orbit)
-
-Lembrando que você precisa ter uma conta no [Figma](https://figma.com/).
-
-## 📝 License
-
-Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
-
----
+O projeto foi desenvolvido a partir da Next Level Week Pocket/in.orbit e
+mantém licença MIT. O layout de referência está no
+[Figma da Rocketseat](https://www.figma.com/community/file/1415093862269754302/nlw-pocket-js-in-orbit).
