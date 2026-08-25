@@ -58,4 +58,7 @@
 - **Correção:** o cabeçalho da conta demo agora separa identidade, ação e cronômetro em telas mobile estreitas, evitando compressão e truncamento.
 - **Correção:** menus liquid glass mobile passaram a ocupar uma área sticky própria, com fundo translúcido e blur sem sobrepor o conteúdo rolável.
 - **Correção:** a aba de metas ativas agora ordena os títulos alfabeticamente, preservando a ordem de arquivamento na aba de arquivadas.
+- **Refatoração:** o resumo foi dividido em cabeçalho, progresso, tabs e histórico; a query semanal passou a ser observada somente na rota, evitando lógica e observadores duplicados.
+- **Impacto adicional:** tabs lineares e liquid glass agora compartilham uma primitive acessível, e o tooltip global ganhou superfície translúcida, cantos maiores e tipografia consistente.
+- **Correção:** a fila de renovação de token agora encerra todas as requisições em espera quando a renovação falha, e confirmações exibem o texto pendente da própria ação.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.

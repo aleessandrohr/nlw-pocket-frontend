@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { CreateGoal } from '@/components/create-goal'
 import { EmptyGoals } from '@/components/empty-goals'
 import { GoalsDialog } from '@/components/goals-dialog'
+import { Loading } from '@/components/loading'
 import { Summary } from '@/components/summary'
 import { Dialog } from '@/components/ui/dialog'
 import { useWeek } from '@/contexts/week'
@@ -23,13 +24,25 @@ export const SummaryRoute = () => {
 		staleTime: 1000 * 60, // 60 seconds
 	})
 
-	if (isLoadingSummary) return null
+	if (isLoadingSummary) return <Loading />
+
+	if (!summary) {
+		return (
+			<div className="flex h-dvh items-center justify-center px-5 text-center text-sm text-zinc-400">
+				Não foi possível carregar o resumo. Tente atualizar a página.
+			</div>
+		)
+	}
 
 	return (
 		<Dialog open={open} defaultOpen={false} onOpenChange={setOpen}>
-			{summary && summary.total > 0 ? (
+			{summary.total > 0 ? (
 				<Summary
-					onOpenCreateGoal={() => setDialogContent('create')}
+					summary={summary}
+					onOpenCreateGoal={() => {
+						setDialogContent('create')
+						setOpen(true)
+					}}
 					onOpenGoals={() => {
 						setDialogContent('goals')
 						setOpen(true)

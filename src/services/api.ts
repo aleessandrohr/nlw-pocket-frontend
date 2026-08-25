@@ -34,12 +34,12 @@ let failedQueue: Array<{
 	reject: (error: unknown) => void
 }> = []
 
+// Resolve ou rejeita todas as requisições que aguardavam a renovação do token.
 const processQueue = (error: unknown) => {
 	for (const prom of failedQueue) {
 		if (error) {
 			prom.reject(error)
-
-			break
+			continue
 		}
 
 		prom.resolve(undefined)

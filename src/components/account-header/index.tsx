@@ -103,6 +103,7 @@ export const AccountHeader = ({ user }: AccountHeaderProps) => {
 					title="Criar uma conta real?"
 					description="A demonstração será encerrada e seus dados temporários serão apagados. Você poderá começar com uma conta pessoal."
 					confirmLabel="Criar minha conta"
+					pendingLabel="Encerrando demo..."
 					isPending={exitDemoMutation.isPending}
 					onConfirm={() => exitDemoMutation.mutate()}
 					onOpenChange={setIsCreateAccountDialogOpen}

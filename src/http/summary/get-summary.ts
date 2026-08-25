@@ -1,31 +1,23 @@
 import { api } from '@/services/api'
 
-interface Goal {
+export interface WeekCompletion {
 	id: string
 	title: string
 	isArchived: boolean
 	completedAt: string
 }
 
-interface GoalsInWeek {
+export interface WeekSummary {
 	completed: number
 	total: number
-	goalsPerDay: {
-		[date: string]: Array<Goal>
-	}
+	goalsPerDay: Record<string, Array<WeekCompletion>> | null
 }
 
-export const getSummary = async (week: number): Promise<GoalsInWeek> => {
-	try {
-		const response = await api.get<GoalsInWeek>('/summary', {
-			params: { week },
-		})
+// Busca o histórico e os totais da semana selecionada sem duplicar tratamento de erro do Axios.
+export const getSummary = async (week: number): Promise<WeekSummary> => {
+	const response = await api.get<WeekSummary>('/summary', {
+		params: { week },
+	})
 
-		const data = response.data
-		return data
-	} catch (error) {
-		console.error(error)
-
-		throw error
-	}
+	return response.data
 }

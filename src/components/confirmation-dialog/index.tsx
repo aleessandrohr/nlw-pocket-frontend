@@ -7,6 +7,7 @@ interface ConfirmationDialogProps {
 	title: string
 	description: string
 	confirmLabel: string
+	pendingLabel?: string
 	isPending?: boolean
 	onConfirm: () => void
 	onOpenChange: (open: boolean) => void
@@ -18,6 +19,7 @@ export const ConfirmationDialog = ({
 	title,
 	description,
 	confirmLabel,
+	pendingLabel = 'Confirmando...',
 	isPending = false,
 	onConfirm,
 	onOpenChange,
@@ -83,7 +85,7 @@ export const ConfirmationDialog = ({
 							disabled={isPending}
 							onClick={onConfirm}
 						>
-							{isPending ? 'Desmarcando...' : confirmLabel}
+							{isPending ? pendingLabel : confirmLabel}
 						</Button>
 					</div>
 				</DialogPrimitive.Content>

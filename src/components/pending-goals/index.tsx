@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckCircle2, Loader2, Plus } from 'lucide-react'
+import { useCallback, useMemo } from 'react'
 import { toast } from 'react-hot-toast'
 import { useWeek } from '@/contexts/week'
 import { createGoalCompletion } from '@/http/goals/create-goal-completion'
@@ -14,7 +15,11 @@ export const PendingGoals = () => {
 
 	const canCompleteGoal = week === 0
 
-	const { data: pendingGoals } = useQuery({
+	const {
+		data: pendingGoals,
+		isError,
+		isLoading,
+	} = useQuery({
 		queryKey: queryKeys.pendingGoals.byWeek(week),
 		queryFn: () => getPendingGoals(week),
 		placeholderData: previousGoals => previousGoals,
@@ -22,49 +27,73 @@ export const PendingGoals = () => {
 
 	const createGoalCompletionMutation = useMutation({
 		mutationFn: createGoalCompletion,
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: queryKeys.summary.all(),
-			})
-			queryClient.invalidateQueries({
-				queryKey: queryKeys.pendingGoals.all(),
-			})
+		onSuccess: async () => {
+			await Promise.all([
+				queryClient.invalidateQueries({
+					queryKey: queryKeys.summary.all(),
+				}),
+				queryClient.invalidateQueries({
+					queryKey: queryKeys.pendingGoals.all(),
+				}),
+			])
 			toast.success('Meta completada com sucesso!')
-
-			createGoalCompletionMutation.reset()
 		},
 		onError: () => {
 			toast.error('Erro ao completar meta!')
 		},
 	})
 
-	const handleCompleteGoal = async (goalId: string) => {
-		if (!canCompleteGoal) return
+	const handleCompleteGoal = useCallback(
+		(goalId: string) => {
+			if (!canCompleteGoal) return
 
-		createGoalCompletionMutation.mutate({ goalId, week })
-	}
-
-	if (!pendingGoals) return null
+			createGoalCompletionMutation.mutate({ goalId, week })
+		},
+		[canCompleteGoal, createGoalCompletionMutation, week]
+	)
 
 	// Mantém metas disponíveis no topo e ordena cada grupo alfabeticamente pelo título.
-	const sortedPendingGoals = [...pendingGoals].sort((goalA, goalB) => {
-		const isGoalACompleted =
-			goalA.completionCount >= goalA.desiredWeeklyFrequency
-		const isGoalBCompleted =
-			goalB.completionCount >= goalB.desiredWeeklyFrequency
-		const isGoalADisabled =
-			!canCompleteGoal || isGoalACompleted || goalA.completedToday
-		const isGoalBDisabled =
-			!canCompleteGoal || isGoalBCompleted || goalB.completedToday
+	const sortedPendingGoals = useMemo(
+		() =>
+			[...(pendingGoals ?? [])].sort((goalA, goalB) => {
+				const isGoalACompleted =
+					goalA.completionCount >= goalA.desiredWeeklyFrequency
+				const isGoalBCompleted =
+					goalB.completionCount >= goalB.desiredWeeklyFrequency
+				const isGoalADisabled =
+					!canCompleteGoal || isGoalACompleted || goalA.completedToday
+				const isGoalBDisabled =
+					!canCompleteGoal || isGoalBCompleted || goalB.completedToday
 
-		if (isGoalADisabled !== isGoalBDisabled) {
-			return Number(isGoalADisabled) - Number(isGoalBDisabled)
-		}
+				if (isGoalADisabled !== isGoalBDisabled) {
+					return Number(isGoalADisabled) - Number(isGoalBDisabled)
+				}
 
-		return goalA.title.localeCompare(goalB.title, 'pt-BR', {
-			sensitivity: 'base',
-		})
-	})
+				return goalA.title.localeCompare(goalB.title, 'pt-BR', {
+					sensitivity: 'base',
+				})
+			}),
+		[canCompleteGoal, pendingGoals]
+	)
+
+	if (isLoading && !pendingGoals) {
+		return (
+			<div className="flex min-h-40 items-center justify-center text-zinc-500">
+				<Loader2
+					className="size-5 animate-spin"
+					aria-label="Carregando metas"
+				/>
+			</div>
+		)
+	}
+
+	if (isError || !pendingGoals) {
+		return (
+			<p className="py-8 text-center text-red-400 text-sm">
+				Não foi possível carregar suas metas.
+			</p>
+		)
+	}
 
 	return (
 		<div className="flex flex-col gap-3">
@@ -90,11 +119,7 @@ export const PendingGoals = () => {
 						<button
 							key={goal.id}
 							type="button"
-							disabled={
-								isDisabled ||
-								createGoalCompletionMutation.isPending ||
-								createGoalCompletionMutation.isSuccess
-							}
+							disabled={isDisabled || isCompleting}
 							onClick={() => handleCompleteGoal(goal.id)}
 							aria-label={
 								!canCompleteGoal

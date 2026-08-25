@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Archive, ArchiveRestore, ListChecks, Loader2, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,6 +9,7 @@ import {
 	DialogDescription,
 	DialogTitle,
 } from '@/components/ui/dialog'
+import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useWeek } from '@/contexts/week'
 import { archiveGoal } from '@/http/goals/archive-goal'
 import type { ArchivedGoal } from '@/http/goals/get-archived-goals'
@@ -82,9 +83,51 @@ interface GoalsDialogProps {
 	open: boolean
 }
 
+interface GoalFilterTabsProps {
+	filter: GoalFilter
+	variant: 'line' | 'glass'
+	onFilterChange: (filter: GoalFilter) => void
+}
+
+const goalFilters = [
+	{ value: 'active', label: 'Ativas', icon: ListChecks },
+	{ value: 'archived', label: 'Arquivadas', icon: Archive },
+] as const
+
+// Mantém o mesmo filtro de metas nos formatos linear e liquid glass.
+const GoalFilterTabs = ({
+	filter,
+	variant,
+	onFilterChange,
+}: GoalFilterTabsProps) => {
+	return (
+		<TabsList variant={variant} role="tablist" aria-label="Filtro de metas">
+			{goalFilters.map(goalFilter => {
+				const Icon = goalFilter.icon
+
+				return (
+					<TabsTrigger
+						key={goalFilter.value}
+						id={`goals-${variant}-${goalFilter.value}-tab`}
+						variant={variant}
+						active={filter === goalFilter.value}
+						role="tab"
+						aria-controls="goals-tab-panel"
+						onClick={() => onFilterChange(goalFilter.value)}
+					>
+						<Icon className="size-4" aria-hidden="true" />
+						{goalFilter.label}
+					</TabsTrigger>
+				)
+			})}
+		</TabsList>
+	)
+}
+
 // Lista metas ativas ou arquivadas e permite alternar o estado de arquivamento.
 export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 	const queryClient = useQueryClient()
+
 	const { week } = useWeek()
 
 	const [filter, setFilter] = useState<GoalFilter>('active')
@@ -153,14 +196,17 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 			: archivedGoalsQuery.isLoading
 	const isError =
 		filter === 'active' ? activeGoalsQuery.isError : archivedGoalsQuery.isError
-	const sortedGoals =
-		filter === 'active'
-			? [...goals].sort((goalA, goalB) =>
-					goalA.title.localeCompare(goalB.title, 'pt-BR', {
-						sensitivity: 'base',
-					})
-				)
-			: goals
+	const sortedGoals = useMemo(
+		() =>
+			filter === 'active'
+				? [...goals].sort((goalA, goalB) =>
+						goalA.title.localeCompare(goalB.title, 'pt-BR', {
+							sensitivity: 'base',
+						})
+					)
+				: goals,
+		[filter, goals]
+	)
 
 	return (
 		<DialogContent>
@@ -178,53 +224,18 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 					</DialogDescription>
 				</div>
 
-				<div
-					className="hidden border-zinc-800 border-b md:flex"
-					role="tablist"
-					aria-label="Filtro de metas"
-				>
-					<button
-						id="active-goals-tab"
-						type="button"
-						role="tab"
-						aria-selected={filter === 'active'}
-						aria-controls="goals-tab-panel"
-						tabIndex={filter === 'active' ? 0 : -1}
-						onClick={() => setFilter('active')}
-						className={`flex items-center gap-2 border-b-2 px-3 pb-3 text-sm transition-colors ${
-							filter === 'active'
-								? 'border-violet-500 text-zinc-100'
-								: 'border-transparent text-zinc-500 hover:text-zinc-300'
-						}`}
-					>
-						<ListChecks className="size-4" />
-						Ativas
-					</button>
-					<button
-						id="archived-goals-tab"
-						type="button"
-						role="tab"
-						aria-selected={filter === 'archived'}
-						aria-controls="goals-tab-panel"
-						tabIndex={filter === 'archived' ? 0 : -1}
-						onClick={() => setFilter('archived')}
-						className={`flex items-center gap-2 border-b-2 px-3 pb-3 text-sm transition-colors ${
-							filter === 'archived'
-								? 'border-violet-500 text-zinc-100'
-								: 'border-transparent text-zinc-500 hover:text-zinc-300'
-						}`}
-					>
-						<Archive className="size-4" />
-						Arquivadas
-					</button>
+				<div className="hidden md:block">
+					<GoalFilterTabs
+						filter={filter}
+						variant="line"
+						onFilterChange={setFilter}
+					/>
 				</div>
 
 				<div
 					id="goals-tab-panel"
 					role="tabpanel"
-					aria-labelledby={
-						filter === 'active' ? 'active-goals-tab' : 'archived-goals-tab'
-					}
+					aria-label={filter === 'active' ? 'Metas ativas' : 'Metas arquivadas'}
 					className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-2 pb-6"
 				>
 					{isLoading && (
@@ -268,38 +279,11 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 					className="sticky bottom-2 z-10 flex shrink-0 justify-center px-4 pt-2 md:hidden"
 					aria-label="Filtro de metas"
 				>
-					<div className="flex w-fit items-center gap-1 rounded-full border border-white/10 bg-zinc-900/35 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl">
-						<button
-							type="button"
-							aria-label="Ativas"
-							aria-pressed={filter === 'active'}
-							title="Ativas"
-							onClick={() => setFilter('active')}
-							className={`flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs transition-colors ${
-								filter === 'active'
-									? 'bg-violet-500/15 text-violet-200 shadow-inner shadow-violet-500/10'
-									: 'text-zinc-400 hover:bg-white/5 hover:text-zinc-100'
-							}`}
-						>
-							<ListChecks className="size-4" />
-							Ativas
-						</button>
-						<button
-							type="button"
-							aria-label="Arquivadas"
-							aria-pressed={filter === 'archived'}
-							title="Arquivadas"
-							onClick={() => setFilter('archived')}
-							className={`flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs transition-colors ${
-								filter === 'archived'
-									? 'bg-violet-500/15 text-violet-200 shadow-inner shadow-violet-500/10'
-									: 'text-zinc-400 hover:bg-white/5 hover:text-zinc-100'
-							}`}
-						>
-							<Archive className="size-4" />
-							Arquivadas
-						</button>
-					</div>
+					<GoalFilterTabs
+						filter={filter}
+						variant="glass"
+						onFilterChange={setFilter}
+					/>
 				</nav>
 			</div>
 		</DialogContent>
