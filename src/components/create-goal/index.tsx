@@ -18,6 +18,7 @@ import {
 	RadioGroupItem,
 } from '@/components/ui/radio-group'
 import { createGoal } from '@/http/goals/create-goal'
+import { queryKeys } from '@/lib/query-keys'
 import {
 	type CreateGoalForm,
 	createGoalFormSchema,
@@ -39,12 +40,13 @@ export const CreateGoal = ({ setOpen }: Props) => {
 		mutationFn: createGoal,
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ['get-pending-goals'],
+				queryKey: queryKeys.pendingGoals.all(),
 			})
 			queryClient.invalidateQueries({
-				queryKey: ['get-summary'],
+				queryKey: queryKeys.summary.all(),
 			})
 			toast.success('Meta cadastrada com sucesso!')
+
 			createGoalMutation.reset()
 
 			reset()

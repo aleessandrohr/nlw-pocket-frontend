@@ -14,9 +14,11 @@ interface GoalsInWeek {
 	}
 }
 
-export const getSummary = async (): Promise<GoalsInWeek> => {
+export const getSummary = async (week: number): Promise<GoalsInWeek> => {
 	try {
-		const response = await api.get<GoalsInWeek>('/summary')
+		const response = await api.get<GoalsInWeek>('/summary', {
+			params: { week },
+		})
 
 		const data = response.data
 		return data

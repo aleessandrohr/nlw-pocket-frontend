@@ -29,4 +29,7 @@
 - **Impacto adicional:** o estilo foi aplicado diretamente aos containers roláveis do cadastro e do gerenciamento de metas, removendo os controles nativos extras.
 - **Impacto adicional:** o thumb da rolagem recebeu destaque violeta discreto e o overflow horizontal foi bloqueado nos diálogos.
 - **Impacto adicional:** o `dayjs` passou a usar uma configuração compartilhada com locale `pt-br`.
+- **Impacto adicional:** adicionados o contexto global da semana e uma fábrica central de `queryKeys`; resumo e metas pendentes agora enviam o deslocamento `week` ao backend.
+- **Impacto adicional:** adicionados controles no resumo para navegar entre semanas anteriores, mantendo a próxima semana desabilitada na semana atual.
+- **Impacto adicional:** conclusões foram desabilitadas nas semanas históricas e agora enviam o deslocamento `week` para o backend validar a operação.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.

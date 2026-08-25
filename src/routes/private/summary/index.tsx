@@ -5,17 +5,20 @@ import { EmptyGoals } from '@/components/empty-goals'
 import { GoalsDialog } from '@/components/goals-dialog'
 import { Summary } from '@/components/summary'
 import { Dialog } from '@/components/ui/dialog'
+import { useWeek } from '@/contexts/week'
 import { getSummary } from '@/http/summary/get-summary'
+import { queryKeys } from '@/lib/query-keys'
 
 export const SummaryRoute = () => {
+	const { week } = useWeek()
 	const [open, setOpen] = useState(false)
 	const [dialogContent, setDialogContent] = useState<'create' | 'goals'>(
 		'create'
 	)
 
 	const { data: summary, isLoading: isLoadingSummary } = useQuery({
-		queryKey: ['get-summary'],
-		queryFn: getSummary,
+		queryKey: queryKeys.summary.byWeek(week),
+		queryFn: () => getSummary(week),
 		staleTime: 1000 * 60, // 60 seconds
 	})
 

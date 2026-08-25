@@ -9,6 +9,7 @@ import {
 	DialogDescription,
 	DialogTitle,
 } from '@/components/ui/dialog'
+import { useWeek } from '@/contexts/week'
 import { archiveGoal } from '@/http/goals/archive-goal'
 import type { ArchivedGoal } from '@/http/goals/get-archived-goals'
 import { getArchivedGoals } from '@/http/goals/get-archived-goals'
@@ -16,6 +17,7 @@ import type { PendingGoal } from '@/http/goals/get-pending-goals'
 import { getPendingGoals } from '@/http/goals/get-pending-goals'
 import { unarchiveGoal } from '@/http/goals/unarchive-goal'
 import dayjs from '@/lib/dayjs'
+import { queryKeys } from '@/lib/query-keys'
 
 type GoalFilter = 'active' | 'archived'
 
@@ -83,6 +85,7 @@ interface GoalsDialogProps {
 // Lista metas ativas ou arquivadas e permite alternar o estado de arquivamento.
 export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 	const queryClient = useQueryClient()
+	const { week } = useWeek()
 
 	const [filter, setFilter] = useState<GoalFilter>('active')
 
@@ -93,13 +96,13 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 	}, [open])
 
 	const activeGoalsQuery = useQuery({
-		queryKey: ['get-pending-goals'],
-		queryFn: getPendingGoals,
+		queryKey: queryKeys.pendingGoals.byWeek(week),
+		queryFn: () => getPendingGoals(week),
 		enabled: open && filter === 'active',
 	})
 
 	const archivedGoalsQuery = useQuery({
-		queryKey: ['get-archived-goals'],
+		queryKey: queryKeys.archivedGoals(),
 		queryFn: getArchivedGoals,
 		enabled: open && filter === 'archived',
 	})
@@ -108,9 +111,11 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 		mutationFn: archiveGoal,
 		onSuccess: async () => {
 			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ['get-pending-goals'] }),
-				queryClient.invalidateQueries({ queryKey: ['get-archived-goals'] }),
-				queryClient.invalidateQueries({ queryKey: ['get-summary'] }),
+				queryClient.invalidateQueries({
+					queryKey: queryKeys.pendingGoals.all(),
+				}),
+				queryClient.invalidateQueries({ queryKey: queryKeys.archivedGoals() }),
+				queryClient.invalidateQueries({ queryKey: queryKeys.summary.all() }),
 			])
 
 			toast.success('Meta arquivada com sucesso!')
@@ -124,9 +129,11 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 		mutationFn: unarchiveGoal,
 		onSuccess: async () => {
 			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ['get-pending-goals'] }),
-				queryClient.invalidateQueries({ queryKey: ['get-archived-goals'] }),
-				queryClient.invalidateQueries({ queryKey: ['get-summary'] }),
+				queryClient.invalidateQueries({
+					queryKey: queryKeys.pendingGoals.all(),
+				}),
+				queryClient.invalidateQueries({ queryKey: queryKeys.archivedGoals() }),
+				queryClient.invalidateQueries({ queryKey: queryKeys.summary.all() }),
 			])
 
 			toast.success('Meta desarquivada com sucesso!')

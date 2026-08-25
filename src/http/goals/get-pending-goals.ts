@@ -7,9 +7,13 @@ export interface PendingGoal {
 	completionCount: number
 }
 
-export const getPendingGoals = async (): Promise<Array<PendingGoal>> => {
+export const getPendingGoals = async (
+	week: number
+): Promise<Array<PendingGoal>> => {
 	try {
-		const response = await api.get<Array<PendingGoal>>('/pending-goals')
+		const response = await api.get<Array<PendingGoal>>('/pending-goals', {
+			params: { week },
+		})
 
 		return response.data
 	} catch (error) {

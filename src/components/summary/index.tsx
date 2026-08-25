@@ -1,5 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { CheckCircle2, MoreHorizontal, Plus } from 'lucide-react'
+import {
+	CheckCircle2,
+	ChevronLeft,
+	ChevronRight,
+	MoreHorizontal,
+	Plus,
+} from 'lucide-react'
 import { AccountHeader } from '@/components/account-header'
 import { PendingGoals } from '@/components/pending-goals'
 import { Button } from '@/components/ui/button'
@@ -8,8 +14,10 @@ import { InOrbitIcon } from '@/components/ui/in-orbit-icon'
 import { Progress, ProgressIndicator } from '@/components/ui/progress-bar'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/contexts/auth'
+import { useWeek } from '@/contexts/week'
 import { getSummary } from '@/http/summary/get-summary'
 import dayjs from '@/lib/dayjs'
+import { queryKeys } from '@/lib/query-keys'
 
 interface SummaryProps {
 	onOpenCreateGoal: () => void
@@ -19,17 +27,27 @@ interface SummaryProps {
 // Exibe o resumo semanal e mantém as ações da conta no cabeçalho próprio.
 export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 	const { user } = useAuth()
+	const { goToNextWeek, goToPreviousWeek, isCurrentWeek, week } = useWeek()
 
 	const { data: summary } = useQuery({
-		queryKey: ['get-summary'],
-		queryFn: getSummary,
+		queryKey: queryKeys.summary.byWeek(week),
+		queryFn: () => getSummary(week),
 		staleTime: 1000 * 60, // 60 seconds
 	})
 
 	if (!summary || !user) return null
 
-	const firstDayOfWeek = dayjs().startOf('week').format('D MMM')
-	const lastDayOfWeek = dayjs().endOf('week').format('D MMM')
+	const firstDayOfWeek = dayjs()
+		.startOf('day')
+		.day(0)
+		.add(week, 'week')
+		.format('D MMM')
+	const lastDayOfWeek = dayjs()
+		.startOf('day')
+		.day(0)
+		.add(week, 'week')
+		.add(6, 'day')
+		.format('D MMM')
 
 	const completedPercentage = Math.round(
 		(summary.completed * 100) / summary.total
@@ -39,11 +57,36 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 		<div className="mx-auto flex max-w-[480px] flex-col gap-6 px-5 py-10">
 			<AccountHeader user={user} />
 			<div className="flex items-end justify-between">
-				<div className="flex items-center gap-6">
+				<div className="flex min-w-0 items-center gap-2">
 					<InOrbitIcon />
-					<span className="font-semibold text-lg capitalize">
+					<Button
+						variant="secondary"
+						size="sm"
+						type="button"
+						className="size-8 shrink-0 p-0"
+						aria-label="Semana anterior"
+						onClick={goToPreviousWeek}
+						data-tooltip-id="tooltip"
+						data-tooltip-content="Semana anterior"
+					>
+						<ChevronLeft className="size-4" />
+					</Button>
+					<span className="whitespace-nowrap font-semibold text-lg capitalize">
 						{firstDayOfWeek} - {lastDayOfWeek}
 					</span>
+					<Button
+						variant="secondary"
+						size="sm"
+						type="button"
+						className="size-8 shrink-0 p-0"
+						aria-label="Próxima semana"
+						disabled={isCurrentWeek}
+						onClick={goToNextWeek}
+						data-tooltip-id="tooltip"
+						data-tooltip-content="Próxima semana"
+					>
+						<ChevronRight className="size-4" />
+					</Button>
 				</div>
 				<div className="flex flex-col items-end justify-end gap-2 md:flex-row">
 					<DialogTrigger asChild>

@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import {
 	createContext,
 	type ReactNode,
@@ -8,6 +9,7 @@ import {
 } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Loading } from '@/components/loading'
+import { useWeek } from '@/contexts/week'
 import { getCsrfToken } from '@/http/auth/csrf-token/get'
 import { getUserProfile } from '@/http/user/get'
 import { setCsrfTokenInMemory } from '@/services/api'
@@ -43,8 +45,10 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+	const queryClient = useQueryClient()
 	const navigate = useNavigate()
 	const location = useLocation()
+	const { setWeek } = useWeek()
 
 	const [user, setUser] = useState<User | null | undefined>(undefined)
 	const [csrfToken, setCsrfToken] = useState<string | null>(null)
@@ -61,11 +65,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		[navigate]
 	)
 
-	// Preserva a rota demo aberta para que ela possa criar uma nova sessão após uma falha inicial.
+	// Limpa sessão, semana e cache para impedir que outra conta reutilize dados anteriores.
 	const logoutInMemory = useCallback(
 		(redirectTo = '/auth/login') => {
 			setUser(null)
 			setCsrfToken(null)
+			setWeek(0)
+
+			queryClient.clear()
 
 			if (
 				location.pathname === '/auth/create-user' ||
@@ -76,7 +83,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 			navigate(redirectTo, { replace: true })
 		},
-		[location.pathname, navigate]
+		[location.pathname, navigate, queryClient, setWeek]
 	)
 
 	useEffect(() => {
