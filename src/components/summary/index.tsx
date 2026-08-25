@@ -201,7 +201,7 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 				aria-labelledby={
 					view === 'goals' ? 'summary-goals-tab' : 'summary-week-tab'
 				}
-				className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-2 pb-10"
+				className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-2 pb-6"
 			>
 				{view === 'goals' ? (
 					<PendingGoals />

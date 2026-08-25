@@ -156,7 +156,7 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 
 	return (
 		<DialogContent>
-			<div className="flex h-full flex-col gap-6">
+			<div className="relative flex h-full flex-col gap-6">
 				<div className="flex flex-col gap-3">
 					<div className="flex items-center justify-between">
 						<DialogTitle>Minhas metas</DialogTitle>
@@ -171,7 +171,7 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 				</div>
 
 				<div
-					className="flex border-zinc-800 border-b"
+					className="hidden border-zinc-800 border-b md:flex"
 					role="tablist"
 					aria-label="Filtro de metas"
 				>
@@ -217,7 +217,7 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 					aria-labelledby={
 						filter === 'active' ? 'active-goals-tab' : 'archived-goals-tab'
 					}
-					className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-2 pb-2"
+					className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-2 pb-6"
 				>
 					{isLoading && (
 						<div className="flex h-full items-center justify-center text-zinc-500">
@@ -256,6 +256,43 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 						</ul>
 					)}
 				</div>
+				<nav
+					className="pointer-events-none absolute inset-x-0 bottom-2 z-10 flex justify-center px-4 md:hidden"
+					aria-label="Filtro de metas"
+				>
+					<div className="pointer-events-auto flex w-fit items-center gap-1 rounded-full border border-white/10 bg-zinc-900/75 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl">
+						<button
+							type="button"
+							aria-label="Ativas"
+							aria-pressed={filter === 'active'}
+							title="Ativas"
+							onClick={() => setFilter('active')}
+							className={`flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs transition-colors ${
+								filter === 'active'
+									? 'bg-violet-500/15 text-violet-200 shadow-inner shadow-violet-500/10'
+									: 'text-zinc-400 hover:bg-white/5 hover:text-zinc-100'
+							}`}
+						>
+							<ListChecks className="size-4" />
+							Ativas
+						</button>
+						<button
+							type="button"
+							aria-label="Arquivadas"
+							aria-pressed={filter === 'archived'}
+							title="Arquivadas"
+							onClick={() => setFilter('archived')}
+							className={`flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs transition-colors ${
+								filter === 'archived'
+									? 'bg-violet-500/15 text-violet-200 shadow-inner shadow-violet-500/10'
+									: 'text-zinc-400 hover:bg-white/5 hover:text-zinc-100'
+							}`}
+						>
+							<Archive className="size-4" />
+							Arquivadas
+						</button>
+					</div>
+				</nav>
 			</div>
 		</DialogContent>
 	)

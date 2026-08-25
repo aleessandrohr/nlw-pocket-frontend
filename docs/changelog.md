@@ -45,4 +45,8 @@
 - **Impacto adicional:** os cards agora recebem `completedToday` e bloqueiam visualmente a conclusão repetida da mesma meta no dia atual.
 - **Impacto adicional:** o histórico da semana atual agora permite desmarcar conclusões, enquanto semanas anteriores permanecem somente leitura.
 - **Impacto adicional:** o histórico mantém altura e alinhamento consistentes mesmo quando a ação de desmarcar não está disponível.
+- **Impacto adicional:** o diálogo de metas agora usa tabs em cápsula liquid glass na parte inferior em telas mobile.
+- **Correção:** reduzido o espaçamento inferior do menu mobile do diálogo de metas para manter apenas um respiro visual.
+- **Impacto adicional:** o painel rolável do resumo agora usa o mesmo respiro inferior do diálogo de metas.
+- **Correção:** simplificada a estilização global das scrollbars para remover os controles nativos de navegação.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.
