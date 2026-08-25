@@ -5,6 +5,7 @@ export interface PendingGoal {
 	title: string
 	desiredWeeklyFrequency: number
 	completionCount: number
+	completedToday: boolean
 }
 
 export const getPendingGoals = async (

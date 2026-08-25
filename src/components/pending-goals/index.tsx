@@ -52,8 +52,10 @@ export const PendingGoals = () => {
 			goalA.completionCount >= goalA.desiredWeeklyFrequency
 		const isGoalBCompleted =
 			goalB.completionCount >= goalB.desiredWeeklyFrequency
-		const isGoalADisabled = !canCompleteGoal || isGoalACompleted
-		const isGoalBDisabled = !canCompleteGoal || isGoalBCompleted
+		const isGoalADisabled =
+			!canCompleteGoal || isGoalACompleted || goalA.completedToday
+		const isGoalBDisabled =
+			!canCompleteGoal || isGoalBCompleted || goalB.completedToday
 
 		if (isGoalADisabled !== isGoalBDisabled) {
 			return Number(isGoalADisabled) - Number(isGoalBDisabled)
@@ -76,8 +78,10 @@ export const PendingGoals = () => {
 			</div>
 			<div className="grid gap-3 sm:grid-cols-2">
 				{sortedPendingGoals.map(goal => {
-					const isCompleted =
+					const isCompletedThisWeek =
 						goal.completionCount >= goal.desiredWeeklyFrequency
+					const isDisabled =
+						!canCompleteGoal || isCompletedThisWeek || goal.completedToday
 					const isCompleting =
 						createGoalCompletionMutation.isPending &&
 						createGoalCompletionMutation.variables?.goalId === goal.id
@@ -87,21 +91,28 @@ export const PendingGoals = () => {
 							key={goal.id}
 							type="button"
 							disabled={
-								!canCompleteGoal ||
-								isCompleted ||
+								isDisabled ||
 								createGoalCompletionMutation.isPending ||
 								createGoalCompletionMutation.isSuccess
 							}
 							onClick={() => handleCompleteGoal(goal.id)}
 							aria-label={
-								canCompleteGoal
-									? `Concluir meta ${goal.title}`
-									: `${goal.title}, somente histórico`
+								!canCompleteGoal
+									? `${goal.title}, somente histórico`
+									: goal.completedToday
+										? `${goal.title}, já concluída hoje`
+										: isCompletedThisWeek
+											? `${goal.title}, meta concluída nesta semana`
+											: `Concluir meta ${goal.title}`
 							}
 							title={
-								canCompleteGoal
-									? undefined
-									: 'Semanas anteriores são apenas histórico!'
+								!canCompleteGoal
+									? 'Semanas anteriores são apenas histórico!'
+									: goal.completedToday
+										? 'Meta já concluída hoje!'
+										: isCompletedThisWeek
+											? 'Meta concluída nesta semana!'
+											: undefined
 							}
 							className="group flex min-w-0 items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-left outline-none transition-colors hover:border-violet-500/50 hover:bg-zinc-900 focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/30 disabled:cursor-not-allowed disabled:opacity-50"
 						>
@@ -117,7 +128,7 @@ export const PendingGoals = () => {
 							<span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 transition-colors group-hover:bg-violet-500/15 group-hover:text-violet-300">
 								{isCompleting ? (
 									<Loader2 className="size-4 animate-spin" />
-								) : isCompleted ? (
+								) : isCompletedThisWeek || goal.completedToday ? (
 									<CheckCircle2 className="size-4 text-emerald-400" />
 								) : (
 									<Plus className="size-4" />

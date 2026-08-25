@@ -42,4 +42,5 @@
 - **Impacto adicional:** removido o espaçamento inferior excedente e restaurados os nomes das opções na navegação mobile.
 - **Impacto adicional:** corrigido o posicionamento global dos tooltips para aparecerem acima do cabeçalho sticky e fora de containers com overflow.
 - **Impacto adicional:** a semana selecionada agora é refletida no parâmetro `week` da URL e restaurada ao recarregar a página.
+- **Impacto adicional:** os cards agora recebem `completedToday` e bloqueiam visualmente a conclusão repetida da mesma meta no dia atual.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.
