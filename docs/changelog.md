@@ -54,6 +54,8 @@
 - **Correção:** cabeçalhos, horários, expiração da demo e dias do histórico agora usam o fuso `America/Fortaleza` de forma consistente.
 - **Impacto adicional:** desmarcar uma conclusão agora exige confirmação explícita antes de executar a remoção.
 - **Impacto adicional:** o diálogo de confirmação ganhou ícone de alerta centralizado e fechamento pelo botão `X`, alinhado aos demais dialogs.
+- **Impacto adicional:** contas demo agora oferecem a ação de encerrar a demonstração e iniciar o cadastro de uma conta pessoal.
+- **Correção:** o cabeçalho da conta demo agora separa identidade, ação e cronômetro em telas mobile estreitas, evitando compressão e truncamento.
 - **Correção:** menus liquid glass mobile passaram a ocupar uma área sticky própria, com fundo translúcido e blur sem sobrepor o conteúdo rolável.
 - **Correção:** a aba de metas ativas agora ordena os títulos alfabeticamente, preservando a ordem de arquivamento na aba de arquivadas.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.
