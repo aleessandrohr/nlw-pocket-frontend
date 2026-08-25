@@ -7,8 +7,10 @@ import { Logout } from './private/auth/logout'
 import { SummaryRoute } from './private/summary'
 import { ProfileRoute } from './private/user/profile'
 import { CreateUserRoute } from './public/auth/create-user'
+import { DemoRoute } from './public/auth/demo'
 import { LoginRoute } from './public/auth/login'
 
+// Registra as rotas públicas e privadas, incluindo a entrada da demonstração.
 export const RoutesProvider = () => {
 	const { isAuthenticated } = useAuth()
 	const navigate = useNavigate()
@@ -36,6 +38,14 @@ export const RoutesProvider = () => {
 				element={
 					<NotAuthenticatedRoute>
 						<LoginRoute />
+					</NotAuthenticatedRoute>
+				}
+			/>
+			<Route
+				path="/demo"
+				element={
+					<NotAuthenticatedRoute>
+						<DemoRoute />
 					</NotAuthenticatedRoute>
 				}
 			/>

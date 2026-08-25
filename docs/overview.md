@@ -34,5 +34,5 @@ cadastram metas semanais, marcam conclusões e consultam um resumo.
 - [Changelog](./changelog.md)
 
 O frontend não possui organizações, TanStack Router, Better Auth, Orgesta ou
-Orbista. A demo efêmera do portfólio é um plano do backend e ainda não possui
-rota `/demo` implementada.
+Orbista. A demo efêmera do portfólio usa a rota `/demo` do frontend, que cria
+uma sessão temporária pelo backend antes de abrir o resumo.

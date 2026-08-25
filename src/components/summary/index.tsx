@@ -1,8 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import ptBR from 'dayjs/locale/pt-br'
 import { CheckCircle2, Loader2, LogOut, Plus } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { AccountHeader } from '@/components/account-header'
 import { PendingGoals } from '@/components/pending-goals'
 import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
@@ -12,11 +11,10 @@ import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/contexts/auth'
 import { logout } from '@/http/auth/logout'
 import { getSummary } from '@/http/summary/get-summary'
-
-dayjs.locale(ptBR)
+import dayjs from '@/lib/dayjs'
 
 export const Summary = () => {
-	const { logoutInMemory } = useAuth()
+	const { user, logoutInMemory } = useAuth()
 
 	const logoutMutation = useMutation({
 		mutationFn: logout,
@@ -37,7 +35,7 @@ export const Summary = () => {
 		staleTime: 1000 * 60, // 60 seconds
 	})
 
-	if (!summary) return null
+	if (!summary || !user) return null
 
 	const firstDayOfWeek = dayjs().startOf('week').format('D MMM')
 	const lastDayOfWeek = dayjs().endOf('week').format('D MMM')
@@ -48,6 +46,7 @@ export const Summary = () => {
 
 	return (
 		<div className="mx-auto flex max-w-[480px] flex-col gap-6 px-5 py-10">
+			{user.isDemo && <AccountHeader user={user} />}
 			<div className="flex items-end justify-between">
 				<div className="flex items-center gap-6">
 					<InOrbitIcon />
@@ -58,6 +57,7 @@ export const Summary = () => {
 				<div className="flex flex-col items-end justify-end gap-2 md:flex-row">
 					<Button
 						variant="secondary"
+						size="sm"
 						data-tooltip-id="tooltip"
 						data-tooltip-content="Sair"
 						disabled={logoutMutation.isPending || logoutMutation.isSuccess}
@@ -65,19 +65,25 @@ export const Summary = () => {
 						className="block md:hidden"
 					>
 						{logoutMutation.isPending ? (
-							<Loader2 className="animate-spin" />
+							<Loader2 className="size-4 animate-spin" />
 						) : (
-							<LogOut />
+							<LogOut className="size-4" />
 						)}
 					</Button>
 					<DialogTrigger asChild>
-						<Button className="truncate">
-							<Plus className="size-4" size="sm" />
+						<Button
+							className="truncate"
+							size="sm"
+							data-tooltip-id="tooltip"
+							data-tooltip-content="Cadastrar meta"
+						>
+							<Plus className="size-4" />
 							Cadastrar meta
 						</Button>
 					</DialogTrigger>
 					<Button
 						variant="secondary"
+						size="sm"
 						data-tooltip-id="tooltip"
 						data-tooltip-content="Sair"
 						disabled={logoutMutation.isPending || logoutMutation.isSuccess}
@@ -85,9 +91,9 @@ export const Summary = () => {
 						className="hidden md:block"
 					>
 						{logoutMutation.isPending ? (
-							<Loader2 className="animate-spin" />
+							<Loader2 className="size-4 animate-spin" />
 						) : (
-							<LogOut />
+							<LogOut className="size-4" />
 						)}
 					</Button>
 				</div>

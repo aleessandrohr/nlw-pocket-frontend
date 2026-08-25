@@ -4,11 +4,18 @@
 
 [`src/contexts/auth.tsx`](../src/contexts/auth.tsx) mantém o usuário e o token
 CSRF em memória. Ao iniciar, chama `GET /user/profile` e
-`GET /auth/csrf-token`; se a sessão falhar, redireciona para o login.
+`GET /auth/csrf-token`; se a sessão falhar, redireciona para o login, exceto
+durante a inicialização da rota `/demo`.
 
 O login e o cadastro recebem o usuário da API, obtêm o CSRF e atualizam o
 contexto. O logout chama `POST /auth/logout`, limpa o estado local e retorna a
 `/auth/login`.
+
+A rota `/demo` chama `POST /auth/demo`, obtém o CSRF em seguida e registra o
+usuário temporário no contexto antes de navegar para `/summary`. O tipo
+`User` mantém `isDemo` e `demoExpiresAt` para a interface identificar a sessão
+temporária. Os cookies de autenticação são mantidos pelo Axios com
+`withCredentials: true`.
 
 ## Cliente HTTP
 

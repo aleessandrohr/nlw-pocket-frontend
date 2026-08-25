@@ -7,6 +7,7 @@ O app usa `BrowserRouter` e `Routes` do React Router DOM. A composição está e
 
 - `/auth/login`: login por e-mail e senha;
 - `/auth/create-user`: cadastro;
+- `/demo`: cria uma conta temporária, inicia a sessão e redireciona para o resumo;
 - `/`: redireciona para `/summary` se autenticado ou `/auth/login` caso
   contrário.
 

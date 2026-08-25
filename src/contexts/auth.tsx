@@ -16,6 +16,8 @@ export interface User {
 	id: string
 	name: string
 	email: string
+	isDemo: boolean
+	demoExpiresAt: string | null
 	updatedAt: string
 	createdAt: string
 }
@@ -59,6 +61,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		[navigate]
 	)
 
+	// Preserva a rota demo aberta para que ela possa criar uma nova sessão após uma falha inicial.
 	const logoutInMemory = useCallback(
 		(redirectTo = '/auth/login') => {
 			setUser(null)
@@ -66,7 +69,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 			if (
 				location.pathname === '/auth/create-user' ||
-				location.pathname === '/auth/login'
+				location.pathname === '/auth/login' ||
+				location.pathname === '/demo'
 			)
 				return
 
