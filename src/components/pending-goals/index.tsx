@@ -1,15 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Plus } from 'lucide-react'
+import { CheckCircle2, Loader2, Plus } from 'lucide-react'
 import { toast } from 'react-hot-toast'
-import { OutlineButton } from '@/components/ui/outline-button'
 import { useWeek } from '@/contexts/week'
 import { createGoalCompletion } from '@/http/goals/create-goal-completion'
 import { getPendingGoals } from '@/http/goals/get-pending-goals'
 import { queryKeys } from '@/lib/query-keys'
 
+// Exibe as metas em cards compactos e preserva o bloqueio do histórico.
 export const PendingGoals = () => {
 	const queryClient = useQueryClient()
+
 	const { week } = useWeek()
+
 	const canCompleteGoal = week === 0
 
 	const { data: pendingGoals } = useQuery({
@@ -44,30 +46,87 @@ export const PendingGoals = () => {
 
 	if (!pendingGoals) return null
 
+	// Mantém metas disponíveis no topo e ordena cada grupo alfabeticamente pelo título.
+	const sortedPendingGoals = [...pendingGoals].sort((goalA, goalB) => {
+		const isGoalACompleted =
+			goalA.completionCount >= goalA.desiredWeeklyFrequency
+		const isGoalBCompleted =
+			goalB.completionCount >= goalB.desiredWeeklyFrequency
+		const isGoalADisabled = !canCompleteGoal || isGoalACompleted
+		const isGoalBDisabled = !canCompleteGoal || isGoalBCompleted
+
+		if (isGoalADisabled !== isGoalBDisabled) {
+			return Number(isGoalADisabled) - Number(isGoalBDisabled)
+		}
+
+		return goalA.title.localeCompare(goalB.title, 'pt-BR', {
+			sensitivity: 'base',
+		})
+	})
+
 	return (
-		<div className="flex flex-wrap gap-3">
-			{pendingGoals?.map(goal => {
-				return (
-					<OutlineButton
-						key={goal.id}
-						disabled={
-							!canCompleteGoal ||
-							goal.completionCount >= goal.desiredWeeklyFrequency ||
-							createGoalCompletionMutation.isPending ||
-							createGoalCompletionMutation.isSuccess
-						}
-						onClick={() => handleCompleteGoal(goal.id)}
-						title={
-							canCompleteGoal
-								? undefined
-								: 'Semanas anteriores são apenas histórico!'
-						}
-					>
-						<Plus className="size-4 text-zinc-600" />
-						{goal.title}
-					</OutlineButton>
-				)
-			})}
+		<div className="flex flex-col gap-3">
+			<div>
+				<h2 className="font-medium text-sm text-zinc-100">Metas da semana</h2>
+				<p className="mt-1 text-xs text-zinc-500">
+					{canCompleteGoal
+						? 'Registre uma conclusão para atualizar seu progresso.'
+						: 'Semanas anteriores são apenas histórico.'}
+				</p>
+			</div>
+			<div className="grid gap-3 sm:grid-cols-2">
+				{sortedPendingGoals.map(goal => {
+					const isCompleted =
+						goal.completionCount >= goal.desiredWeeklyFrequency
+					const isCompleting =
+						createGoalCompletionMutation.isPending &&
+						createGoalCompletionMutation.variables?.goalId === goal.id
+
+					return (
+						<button
+							key={goal.id}
+							type="button"
+							disabled={
+								!canCompleteGoal ||
+								isCompleted ||
+								createGoalCompletionMutation.isPending ||
+								createGoalCompletionMutation.isSuccess
+							}
+							onClick={() => handleCompleteGoal(goal.id)}
+							aria-label={
+								canCompleteGoal
+									? `Concluir meta ${goal.title}`
+									: `${goal.title}, somente histórico`
+							}
+							title={
+								canCompleteGoal
+									? undefined
+									: 'Semanas anteriores são apenas histórico!'
+							}
+							className="group flex min-w-0 items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-left outline-none transition-colors hover:border-violet-500/50 hover:bg-zinc-900 focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+						>
+							<span className="min-w-0">
+								<span className="block truncate font-medium text-sm text-zinc-100">
+									{goal.title}
+								</span>
+								<span className="mt-1 block text-xs text-zinc-500">
+									{goal.completionCount}/{goal.desiredWeeklyFrequency}{' '}
+									conclusões nesta semana
+								</span>
+							</span>
+							<span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 transition-colors group-hover:bg-violet-500/15 group-hover:text-violet-300">
+								{isCompleting ? (
+									<Loader2 className="size-4 animate-spin" />
+								) : isCompleted ? (
+									<CheckCircle2 className="size-4 text-emerald-400" />
+								) : (
+									<Plus className="size-4" />
+								)}
+							</span>
+						</button>
+					)
+				})}
+			</div>
 		</div>
 	)
 }

@@ -32,4 +32,14 @@
 - **Impacto adicional:** adicionados o contexto global da semana e uma fábrica central de `queryKeys`; resumo e metas pendentes agora enviam o deslocamento `week` ao backend.
 - **Impacto adicional:** adicionados controles no resumo para navegar entre semanas anteriores, mantendo a próxima semana desabilitada na semana atual.
 - **Impacto adicional:** conclusões foram desabilitadas nas semanas históricas e agora enviam o deslocamento `week` para o backend validar a operação.
+- **Impacto adicional:** a listagem de metas pendentes foi reorganizada em cards responsivos com contador, estados visuais e feedback de conclusão.
+- **Impacto adicional:** o resumo ganhou tabs para alternar entre os cards de metas e o histórico da semana, com metas desabilitadas agrupadas ao final e cada grupo ordenado alfabeticamente.
+- **Impacto adicional:** ajustado o cabeçalho responsivo para manter as ações de meta acima da navegação semanal em telas estreitas.
+- **Impacto adicional:** o botão de cadastro e a navegação semanal agora aproveitam toda a largura disponível em telas estreitas.
+- **Impacto adicional:** o cabeçalho do resumo foi fixado e o conteúdo de cada tab passou a usar rolagem vertical própria.
+- **Impacto adicional:** adicionada navegação inferior com efeito glass no mobile, mantendo as tabs acessíveis e reservando espaço para o último conteúdo.
+- **Impacto adicional:** a navegação mobile foi compactada em um menu tipo cápsula, com ícones e bordas mais arredondadas.
+- **Impacto adicional:** removido o espaçamento inferior excedente e restaurados os nomes das opções na navegação mobile.
+- **Impacto adicional:** corrigido o posicionamento global dos tooltips para aparecerem acima do cabeçalho sticky e fora de containers com overflow.
+- **Impacto adicional:** a semana selecionada agora é refletida no parâmetro `week` da URL e restaurada ao recarregar a página.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.

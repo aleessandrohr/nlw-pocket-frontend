@@ -23,7 +23,7 @@ export const App = () => {
 					},
 				}}
 			/>
-			<Tooltip id="tooltip" />
+			<Tooltip id="tooltip" positionStrategy="fixed" className="!z-[100]" />
 		</BrowserRouter>
 	)
 }

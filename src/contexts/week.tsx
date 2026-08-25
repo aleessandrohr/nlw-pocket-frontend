@@ -3,9 +3,11 @@ import {
 	type ReactNode,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useState,
 } from 'react'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 interface WeekContextValue {
 	week: number
@@ -21,23 +23,57 @@ interface WeekProviderProps {
 	children: ReactNode
 }
 
+// Converte o parâmetro da URL somente após validar o formato e o limite da semana.
+const parseWeekParam = (value: string | null) => {
+	if (!value || !/^-?\d+$/.test(value)) return 0
+
+	const parsedWeek = Number(value)
+
+	return Number.isSafeInteger(parsedWeek) && parsedWeek <= 0 ? parsedWeek : 0
+}
+
 // Mantém a semana selecionada e impede que a interface navegue para o futuro.
 export const WeekProvider = ({ children }: WeekProviderProps) => {
-	const [week, setWeekState] = useState(0)
+	const location = useLocation()
+	const [searchParams, setSearchParams] = useSearchParams()
+	const [week, setWeekState] = useState(() =>
+		parseWeekParam(searchParams.get('week'))
+	)
 
-	const setWeek = useCallback((nextWeek: number) => {
-		if (!Number.isInteger(nextWeek) || nextWeek > 0) return
+	useEffect(() => {
+		if (location.pathname !== '/summary') return
 
-		setWeekState(nextWeek)
-	}, [])
+		setWeekState(parseWeekParam(searchParams.get('week')))
+	}, [location.pathname, searchParams])
+
+	const setWeek = useCallback(
+		(nextWeek: number) => {
+			if (!Number.isInteger(nextWeek) || nextWeek > 0) return
+
+			setWeekState(nextWeek)
+
+			if (location.pathname !== '/summary') return
+
+			setSearchParams(
+				previousParams => {
+					const nextParams = new URLSearchParams(previousParams)
+					nextParams.set('week', String(nextWeek))
+
+					return nextParams
+				},
+				{ replace: true }
+			)
+		},
+		[location.pathname, setSearchParams]
+	)
 
 	const goToPreviousWeek = useCallback(() => {
-		setWeekState(currentWeek => currentWeek - 1)
-	}, [])
+		setWeek(week - 1)
+	}, [setWeek, week])
 
 	const goToNextWeek = useCallback(() => {
-		setWeekState(currentWeek => Math.min(0, currentWeek + 1))
-	}, [])
+		setWeek(Math.min(0, week + 1))
+	}, [setWeek, week])
 
 	const value = useMemo(
 		() => ({
