@@ -1,6 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { CheckCircle2, Loader2, LogOut, Plus } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { useQuery } from '@tanstack/react-query'
+import { CheckCircle2, MoreHorizontal, Plus } from 'lucide-react'
 import { AccountHeader } from '@/components/account-header'
 import { PendingGoals } from '@/components/pending-goals'
 import { Button } from '@/components/ui/button'
@@ -9,25 +8,17 @@ import { InOrbitIcon } from '@/components/ui/in-orbit-icon'
 import { Progress, ProgressIndicator } from '@/components/ui/progress-bar'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/contexts/auth'
-import { logout } from '@/http/auth/logout'
 import { getSummary } from '@/http/summary/get-summary'
 import dayjs from '@/lib/dayjs'
 
-export const Summary = () => {
-	const { user, logoutInMemory } = useAuth()
+interface SummaryProps {
+	onOpenCreateGoal: () => void
+	onOpenGoals: () => void
+}
 
-	const logoutMutation = useMutation({
-		mutationFn: logout,
-		onSuccess: () => {
-			toast.success('Saiu com sucesso')
-			logoutMutation.reset()
-
-			logoutInMemory()
-		},
-		onError: () => {
-			toast.error('Erro ao sair')
-		},
-	})
+// Exibe o resumo semanal e mantém as ações da conta no cabeçalho próprio.
+export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
+	const { user } = useAuth()
 
 	const { data: summary } = useQuery({
 		queryKey: ['get-summary'],
@@ -46,7 +37,7 @@ export const Summary = () => {
 
 	return (
 		<div className="mx-auto flex max-w-[480px] flex-col gap-6 px-5 py-10">
-			{user.isDemo && <AccountHeader user={user} />}
+			<AccountHeader user={user} />
 			<div className="flex items-end justify-between">
 				<div className="flex items-center gap-6">
 					<InOrbitIcon />
@@ -55,25 +46,11 @@ export const Summary = () => {
 					</span>
 				</div>
 				<div className="flex flex-col items-end justify-end gap-2 md:flex-row">
-					<Button
-						variant="secondary"
-						size="sm"
-						data-tooltip-id="tooltip"
-						data-tooltip-content="Sair"
-						disabled={logoutMutation.isPending || logoutMutation.isSuccess}
-						onClick={() => logoutMutation.mutate()}
-						className="block md:hidden"
-					>
-						{logoutMutation.isPending ? (
-							<Loader2 className="size-4 animate-spin" />
-						) : (
-							<LogOut className="size-4" />
-						)}
-					</Button>
 					<DialogTrigger asChild>
 						<Button
 							className="truncate"
 							size="sm"
+							onClick={onOpenCreateGoal}
 							data-tooltip-id="tooltip"
 							data-tooltip-content="Cadastrar meta"
 						>
@@ -84,17 +61,14 @@ export const Summary = () => {
 					<Button
 						variant="secondary"
 						size="sm"
+						type="button"
+						className="size-9 p-0"
+						aria-label="Mais opções de meta"
+						onClick={onOpenGoals}
 						data-tooltip-id="tooltip"
-						data-tooltip-content="Sair"
-						disabled={logoutMutation.isPending || logoutMutation.isSuccess}
-						onClick={() => logoutMutation.mutate()}
-						className="hidden md:block"
+						data-tooltip-content="Mais opções de meta"
 					>
-						{logoutMutation.isPending ? (
-							<Loader2 className="size-4 animate-spin" />
-						) : (
-							<LogOut className="size-4" />
-						)}
+						<MoreHorizontal className="size-4" />
 					</Button>
 				</div>
 			</div>

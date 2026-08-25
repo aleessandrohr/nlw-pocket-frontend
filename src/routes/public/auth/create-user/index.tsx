@@ -42,14 +42,14 @@ export const CreateUserRoute = () => {
 				password: data.password,
 			}),
 		onSuccess: async user => {
-			toast.success('Usuário criado com sucesso')
+			toast.success('Usuário criado com sucesso!')
 
 			const { csrfToken } = await getCsrfToken()
 
 			loginInMemory(user, csrfToken)
 		},
 		onError: () => {
-			toast.error('Erro ao criar usuário')
+			toast.error('Erro ao criar usuário!')
 
 			logoutInMemory()
 		},

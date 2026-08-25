@@ -10,13 +10,14 @@ Queries usadas atualmente incluem:
 
 - `get-summary` para o resumo semanal;
 - `get-pending-goals` para metas pendentes;
+- `get-archived-goals` para metas arquivadas;
 - `user` para o perfil.
 
 ## Mutations
 
 As mutations são criadas nas telas ou componentes que apresentam o fluxo. Ao
-concluir ou criar uma meta, o componente invalida `get-summary` e/ou
-`get-pending-goals` para buscar os dados atualizados.
+concluir, criar, arquivar ou desarquivar uma meta, os componentes invalidam as
+queries relacionadas para buscar os dados atualizados.
 
 ## Convenções
 

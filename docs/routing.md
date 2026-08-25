@@ -13,7 +13,8 @@ O app usa `BrowserRouter` e `Routes` do React Router DOM. A composição está e
 
 ## Rotas privadas
 
-- `/summary`: metas pendentes, progresso, conclusões e cadastro de meta;
+- `/summary`: metas pendentes, progresso, conclusões, cadastro e gerenciamento
+  de metas arquivadas;
 - `/user/profile`: consulta o perfil atual;
 - `/auth/logout`: executa o fluxo de logout.
 

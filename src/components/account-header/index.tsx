@@ -1,5 +1,8 @@
-import { Users } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+import { Loader2, LogOut, Users } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import toast from 'react-hot-toast'
+import { Button } from '@/components/ui/button'
 import type { User } from '@/contexts/auth'
 import { useAuth } from '@/contexts/auth'
 import { logout } from '@/http/auth/logout'
@@ -22,8 +25,20 @@ const formatRemainingTime = (totalSeconds: number) => {
 // Exibe a conta atual e atualiza em tempo real o prazo da demonstração.
 export const AccountHeader = ({ user }: AccountHeaderProps) => {
 	const { logoutInMemory } = useAuth()
+
 	const [now, setNow] = useState(() => dayjs())
 	const hasLoggedOut = useRef(false)
+
+	const logoutMutation = useMutation({
+		mutationFn: logout,
+		onSuccess: () => {
+			toast.success('Saiu com sucesso!')
+			logoutInMemory()
+		},
+		onError: () => {
+			toast.error('Erro ao sair!')
+		},
+	})
 
 	const expiration = user.demoExpiresAt ? dayjs(user.demoExpiresAt) : null
 	const hasValidExpiration = expiration?.isValid() === true
@@ -76,7 +91,7 @@ export const AccountHeader = ({ user }: AccountHeaderProps) => {
 				</div>
 			</div>
 
-			{user.isDemo && (
+			{user.isDemo ? (
 				<div className="shrink-0 text-right">
 					<p className="text-xs text-zinc-400">
 						{isExpired ? 'Demo expirada' : 'Expira em'}
@@ -87,6 +102,23 @@ export const AccountHeader = ({ user }: AccountHeaderProps) => {
 						</p>
 					)}
 				</div>
+			) : (
+				<Button
+					variant="secondary"
+					size="sm"
+					type="button"
+					aria-label="Sair"
+					data-tooltip-id="tooltip"
+					data-tooltip-content="Sair"
+					disabled={logoutMutation.isPending || logoutMutation.isSuccess}
+					onClick={() => logoutMutation.mutate()}
+				>
+					{logoutMutation.isPending ? (
+						<Loader2 className="size-4 animate-spin" />
+					) : (
+						<LogOut className="size-4" />
+					)}
+				</Button>
 			)}
 		</header>
 	)

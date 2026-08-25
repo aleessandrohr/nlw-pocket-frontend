@@ -1,15 +1,15 @@
 import { api } from '@/services/api'
 
-interface PendingGoals {
+export interface PendingGoal {
 	id: string
 	title: string
 	desiredWeeklyFrequency: number
 	completionCount: number
 }
 
-export const getPendingGoals = async (): Promise<Array<PendingGoals>> => {
+export const getPendingGoals = async (): Promise<Array<PendingGoal>> => {
 	try {
-		const response = await api.get<Array<PendingGoals>>('/pending-goals')
+		const response = await api.get<Array<PendingGoal>>('/pending-goals')
 
 		return response.data
 	} catch (error) {

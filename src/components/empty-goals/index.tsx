@@ -14,13 +14,13 @@ export const EmptyGoals = () => {
 	const logoutMutation = useMutation({
 		mutationFn: logout,
 		onSuccess: () => {
-			toast.success('Saiu com sucesso')
+			toast.success('Saiu com sucesso!')
 			logoutMutation.reset()
 
 			logoutInMemory()
 		},
 		onError: () => {
-			toast.error('Erro ao sair')
+			toast.error('Erro ao sair!')
 		},
 	})
 

@@ -20,5 +20,13 @@
 - **Impacto:** visitantes recebem sessão autenticada, token CSRF, identificação `isDemo` e redirecionamento automático para `/summary` sem passar pelo login.
 - **Impacto adicional:** o resumo agora exibe a conta atual e um contador em tempo real para a expiração da demo.
 - **Impacto adicional:** ao expirar, a sessão demo chama o logout e limpa o estado local automaticamente.
+- **Impacto adicional:** o logout de contas pessoais foi movido para o cabeçalho, e o resumo ganhou o botão reservado para opções de meta.
+- **Impacto adicional:** o botão de opções agora abre o diálogo de metas, com filtro de arquivadas e ações de arquivar/desarquivar.
+- **Impacto adicional:** corrigida a importação global dos estilos do `react-tooltip` para exibir as dicas das ações.
+- **Impacto adicional:** adicionada descrição nativa nas ações de arquivar e desarquivar como fallback para tooltips em dialogs.
+- **Impacto adicional:** corrigidas as cores e a compatibilidade da barra de rolagem do tema escuro.
+- **Impacto adicional:** a barra de rolagem foi simplificada com espessura menor, cantos arredondados e destaque violeta discreto no hover.
+- **Impacto adicional:** o estilo foi aplicado diretamente aos containers roláveis do cadastro e do gerenciamento de metas, removendo os controles nativos extras.
+- **Impacto adicional:** o thumb da rolagem recebeu destaque violeta discreto e o overflow horizontal foi bloqueado nos diálogos.
 - **Impacto adicional:** o `dayjs` passou a usar uma configuração compartilhada com locale `pt-br`.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.

@@ -1,6 +1,7 @@
 import { Toaster } from 'react-hot-toast'
 import { BrowserRouter } from 'react-router-dom'
 import { Tooltip } from 'react-tooltip'
+import 'react-tooltip/dist/react-tooltip.css'
 import { AuthProvider } from './contexts/auth'
 import { RoutesProvider } from './routes'
 

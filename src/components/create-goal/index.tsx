@@ -44,7 +44,7 @@ export const CreateGoal = ({ setOpen }: Props) => {
 			queryClient.invalidateQueries({
 				queryKey: ['get-summary'],
 			})
-			toast.success('Meta cadastrada com sucesso')
+			toast.success('Meta cadastrada com sucesso!')
 			createGoalMutation.reset()
 
 			reset()
@@ -52,7 +52,7 @@ export const CreateGoal = ({ setOpen }: Props) => {
 			setOpen(false)
 		},
 		onError: () => {
-			toast.error('Erro ao cadastrar meta')
+			toast.error('Erro ao cadastrar meta!')
 		},
 	})
 
@@ -82,7 +82,7 @@ export const CreateGoal = ({ setOpen }: Props) => {
 					</DialogDescription>
 				</div>
 				<form
-					className="flex flex-1 flex-col justify-between gap-2 overflow-y-auto"
+					className="scrollbar-modern flex flex-1 flex-col justify-between gap-2 overflow-y-auto overflow-x-hidden"
 					onSubmit={handleSubmit(handleOnSubmit)}
 				>
 					<div className="flex flex-col gap-6">

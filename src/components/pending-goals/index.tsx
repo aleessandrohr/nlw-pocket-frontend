@@ -22,11 +22,11 @@ export const PendingGoals = () => {
 			queryClient.invalidateQueries({
 				queryKey: ['get-pending-goals'],
 			})
-			toast.success('Meta completada com sucesso')
+			toast.success('Meta completada com sucesso!')
 			createGoalCompletionMutation.reset()
 		},
 		onError: () => {
-			toast.error('Erro ao completar meta')
+			toast.error('Erro ao completar meta!')
 		},
 	})
 

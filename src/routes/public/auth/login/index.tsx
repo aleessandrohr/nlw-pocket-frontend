@@ -26,14 +26,14 @@ export const LoginRoute = () => {
 	const loginMutation = useMutation({
 		mutationFn: (data: LoginForm) => login(data),
 		onSuccess: async user => {
-			toast.success('Entrou com sucesso')
+			toast.success('Entrou com sucesso!')
 
 			const { csrfToken } = await getCsrfToken()
 
 			loginInMemory(user, csrfToken)
 		},
 		onError: () => {
-			toast.error('Email ou senha inválidos')
+			toast.error('Email ou senha inválidos!')
 
 			logoutInMemory()
 		},
