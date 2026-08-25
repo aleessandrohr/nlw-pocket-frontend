@@ -32,6 +32,7 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 	const { data: summary } = useQuery({
 		queryKey: queryKeys.summary.byWeek(week),
 		queryFn: () => getSummary(week),
+		placeholderData: previousSummary => previousSummary,
 		staleTime: 1000 * 60, // 60 seconds
 	})
 

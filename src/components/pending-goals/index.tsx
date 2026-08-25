@@ -15,6 +15,7 @@ export const PendingGoals = () => {
 	const { data: pendingGoals } = useQuery({
 		queryKey: queryKeys.pendingGoals.byWeek(week),
 		queryFn: () => getPendingGoals(week),
+		placeholderData: previousGoals => previousGoals,
 	})
 
 	const createGoalCompletionMutation = useMutation({

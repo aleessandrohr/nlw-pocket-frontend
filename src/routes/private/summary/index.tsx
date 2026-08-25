@@ -19,6 +19,7 @@ export const SummaryRoute = () => {
 	const { data: summary, isLoading: isLoadingSummary } = useQuery({
 		queryKey: queryKeys.summary.byWeek(week),
 		queryFn: () => getSummary(week),
+		placeholderData: previousSummary => previousSummary,
 		staleTime: 1000 * 60, // 60 seconds
 	})
 
