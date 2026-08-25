@@ -49,4 +49,11 @@
 - **Correção:** reduzido o espaçamento inferior do menu mobile do diálogo de metas para manter apenas um respiro visual.
 - **Impacto adicional:** o painel rolável do resumo agora usa o mesmo respiro inferior do diálogo de metas.
 - **Correção:** simplificada a estilização global das scrollbars para remover os controles nativos de navegação.
+- **Impacto adicional:** conclusões de metas arquivadas agora recebem destaque visual e identificação própria no histórico semanal.
+- **Correção:** o histórico agora exibe a ação de desmarcar somente para conclusões feitas no dia atual.
+- **Correção:** cabeçalhos, horários, expiração da demo e dias do histórico agora usam o fuso `America/Fortaleza` de forma consistente.
+- **Impacto adicional:** desmarcar uma conclusão agora exige confirmação explícita antes de executar a remoção.
+- **Impacto adicional:** o diálogo de confirmação ganhou ícone de alerta centralizado e fechamento pelo botão `X`, alinhado aos demais dialogs.
+- **Correção:** menus liquid glass mobile passaram a ocupar uma área sticky própria, com fundo translúcido e blur sem sobrepor o conteúdo rolável.
+- **Correção:** a aba de metas ativas agora ordena os títulos alfabeticamente, preservando a ordem de arquivamento na aba de arquivadas.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.

@@ -16,7 +16,7 @@ import { getArchivedGoals } from '@/http/goals/get-archived-goals'
 import type { PendingGoal } from '@/http/goals/get-pending-goals'
 import { getPendingGoals } from '@/http/goals/get-pending-goals'
 import { unarchiveGoal } from '@/http/goals/unarchive-goal'
-import dayjs from '@/lib/dayjs'
+import { toAppTimeZone } from '@/lib/dayjs'
 import { queryKeys } from '@/lib/query-keys'
 
 type GoalFilter = 'active' | 'archived'
@@ -48,7 +48,7 @@ const GoalItem = ({
 				</p>
 				<p className="text-xs text-zinc-500">
 					{isArchived
-						? `Arquivada em ${dayjs(archivedGoal?.archivedAt).format('D [de] MMMM [de] YYYY')}`
+						? `Arquivada em ${toAppTimeZone(archivedGoal?.archivedAt ?? '').format('D [de] MMMM [de] YYYY')}`
 						: `${goal.completionCount}/${goal.desiredWeeklyFrequency} conclusões nesta semana`}
 				</p>
 			</div>
@@ -153,6 +153,14 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 			: archivedGoalsQuery.isLoading
 	const isError =
 		filter === 'active' ? activeGoalsQuery.isError : archivedGoalsQuery.isError
+	const sortedGoals =
+		filter === 'active'
+			? [...goals].sort((goalA, goalB) =>
+					goalA.title.localeCompare(goalB.title, 'pt-BR', {
+						sensitivity: 'base',
+					})
+				)
+			: goals
 
 	return (
 		<DialogContent>
@@ -236,9 +244,9 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 								: 'Nenhuma meta arquivada encontrada.'}
 						</p>
 					)}
-					{!isLoading && !isError && goals.length > 0 && (
+					{!isLoading && !isError && sortedGoals.length > 0 && (
 						<ul className="flex flex-col gap-3">
-							{goals.map(goal => (
+							{sortedGoals.map(goal => (
 								<GoalItem
 									key={goal.id}
 									goal={goal}
@@ -257,10 +265,10 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 					)}
 				</div>
 				<nav
-					className="pointer-events-none absolute inset-x-0 bottom-2 z-10 flex justify-center px-4 md:hidden"
+					className="sticky bottom-2 z-10 flex shrink-0 justify-center px-4 pt-2 md:hidden"
 					aria-label="Filtro de metas"
 				>
-					<div className="pointer-events-auto flex w-fit items-center gap-1 rounded-full border border-white/10 bg-zinc-900/75 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl">
+					<div className="flex w-fit items-center gap-1 rounded-full border border-white/10 bg-zinc-900/35 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl">
 						<button
 							type="button"
 							aria-label="Ativas"

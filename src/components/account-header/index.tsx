@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import type { User } from '@/contexts/auth'
 import { useAuth } from '@/contexts/auth'
 import { logout } from '@/http/auth/logout'
-import dayjs from '@/lib/dayjs'
+import { nowInAppTimeZone, toAppTimeZone } from '@/lib/dayjs'
 
 interface AccountHeaderProps {
 	user: User
@@ -26,7 +26,7 @@ const formatRemainingTime = (totalSeconds: number) => {
 export const AccountHeader = ({ user }: AccountHeaderProps) => {
 	const { logoutInMemory } = useAuth()
 
-	const [now, setNow] = useState(() => dayjs())
+	const [now, setNow] = useState(() => nowInAppTimeZone())
 	const hasLoggedOut = useRef(false)
 
 	const logoutMutation = useMutation({
@@ -40,14 +40,16 @@ export const AccountHeader = ({ user }: AccountHeaderProps) => {
 		},
 	})
 
-	const expiration = user.demoExpiresAt ? dayjs(user.demoExpiresAt) : null
+	const expiration = user.demoExpiresAt
+		? toAppTimeZone(user.demoExpiresAt)
+		: null
 	const hasValidExpiration = expiration?.isValid() === true
 
 	useEffect(() => {
 		if (!user.isDemo || !user.demoExpiresAt) return
 
 		const intervalId = window.setInterval(() => {
-			setNow(dayjs())
+			setNow(nowInAppTimeZone())
 		}, 1000)
 
 		return () => window.clearInterval(intervalId)

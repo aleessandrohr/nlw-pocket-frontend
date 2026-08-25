@@ -4,7 +4,7 @@ interface Goal {
 	id: string
 	title: string
 	isArchived: boolean
-	completedAt: Date
+	completedAt: string
 }
 
 interface GoalsInWeek {

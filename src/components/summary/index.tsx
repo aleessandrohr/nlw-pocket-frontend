@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
+	Archive,
 	CalendarDays,
 	CheckCircle2,
 	ChevronLeft,
@@ -13,6 +14,7 @@ import {
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { AccountHeader } from '@/components/account-header'
+import { ConfirmationDialog } from '@/components/confirmation-dialog'
 import { PendingGoals } from '@/components/pending-goals'
 import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
@@ -22,7 +24,7 @@ import { useAuth } from '@/contexts/auth'
 import { useWeek } from '@/contexts/week'
 import { deleteGoalCompletion } from '@/http/goals/delete-goal-completion'
 import { getSummary } from '@/http/summary/get-summary'
-import dayjs from '@/lib/dayjs'
+import { nowInAppTimeZone, toAppCivilDate, toAppTimeZone } from '@/lib/dayjs'
 import { queryKeys } from '@/lib/query-keys'
 
 interface SummaryProps {
@@ -32,12 +34,19 @@ interface SummaryProps {
 
 type SummaryView = 'goals' | 'week'
 
+interface CompletionToUndo {
+	id: string
+	title: string
+}
+
 // Exibe o resumo semanal e mantém as ações da conta no cabeçalho próprio.
 export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 	const queryClient = useQueryClient()
 	const { user } = useAuth()
 	const { goToNextWeek, goToPreviousWeek, isCurrentWeek, week } = useWeek()
 	const [view, setView] = useState<SummaryView>('goals')
+	const [completionToUndo, setCompletionToUndo] =
+		useState<CompletionToUndo | null>(null)
 
 	const deleteGoalCompletionMutation = useMutation({
 		mutationFn: deleteGoalCompletion,
@@ -49,6 +58,7 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 				}),
 			])
 
+			setCompletionToUndo(null)
 			toast.success('Conclusão desmarcada com sucesso!')
 		},
 		onError: () => {
@@ -65,12 +75,13 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 
 	if (!summary || !user) return null
 
-	const firstDayOfWeek = dayjs()
+	const now = nowInAppTimeZone()
+	const firstDayOfWeek = now
 		.startOf('day')
 		.day(0)
 		.add(week, 'week')
 		.format('D MMM')
-	const lastDayOfWeek = dayjs()
+	const lastDayOfWeek = now
 		.startOf('day')
 		.day(0)
 		.add(week, 'week')
@@ -83,6 +94,27 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 
 	return (
 		<div className="mx-auto flex h-dvh max-w-[480px] flex-col overflow-hidden px-5 pt-10">
+			<ConfirmationDialog
+				open={completionToUndo !== null}
+				title="Desmarcar conclusão?"
+				description={
+					completionToUndo
+						? `A conclusão de "${completionToUndo.title}" será removida de hoje.`
+						: ''
+				}
+				confirmLabel="Desmarcar"
+				isPending={deleteGoalCompletionMutation.isPending}
+				onConfirm={() => {
+					if (!completionToUndo) return
+
+					deleteGoalCompletionMutation.mutate(completionToUndo.id)
+				}}
+				onOpenChange={open => {
+					if (!open && !deleteGoalCompletionMutation.isPending) {
+						setCompletionToUndo(null)
+					}
+				}}
+			/>
 			<header className="sticky top-0 z-10 flex shrink-0 flex-col gap-6 bg-zinc-950 pb-4">
 				<AccountHeader user={user} />
 				<div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -210,8 +242,8 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 						<h2 className="font-medium text-xl">Sua semana</h2>
 						{summary.goalsPerDay &&
 							Object.entries(summary.goalsPerDay).map(([date, goals]) => {
-								const weekDay = dayjs(date).format('dddd')
-								const formattedDate = dayjs(date).format('D [de] MMMM')
+								const weekDay = toAppCivilDate(date).format('dddd')
+								const formattedDate = toAppCivilDate(date).format('D [de] MMMM')
 
 								return (
 									<div key={date} className="flex flex-col gap-4">
@@ -223,7 +255,13 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 										</h3>
 										<ul className="flex flex-col gap-3">
 											{goals.map(goal => {
-												const time = dayjs(goal.completedAt).format('HH:mm')
+												const time = toAppTimeZone(goal.completedAt).format(
+													'HH:mm'
+												)
+												const canUndoCompletion =
+													isCurrentWeek &&
+													!goal.isArchived &&
+													toAppTimeZone(goal.completedAt).isSame(now, 'day')
 
 												return (
 													<li
@@ -242,7 +280,21 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 															</span>
 														</div>
 														<div className="flex size-8 shrink-0 items-center justify-center">
-															{isCurrentWeek && !goal.isArchived && (
+															{goal.isArchived ? (
+																<span
+																	role="img"
+																	aria-label="Meta arquivada"
+																	title="Meta arquivada"
+																	data-tooltip-id="tooltip"
+																	data-tooltip-content="Meta arquivada"
+																	className="flex size-8 items-center justify-center rounded-lg bg-zinc-800 text-zinc-500"
+																>
+																	<Archive
+																		className="size-4"
+																		aria-hidden="true"
+																	/>
+																</span>
+															) : canUndoCompletion ? (
 																<Button
 																	variant="secondary"
 																	size="sm"
@@ -256,7 +308,10 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 																		deleteGoalCompletionMutation.isPending
 																	}
 																	onClick={() =>
-																		deleteGoalCompletionMutation.mutate(goal.id)
+																		setCompletionToUndo({
+																			id: goal.id,
+																			title: goal.title,
+																		})
 																	}
 																>
 																	{deleteGoalCompletionMutation.isPending &&
@@ -267,7 +322,7 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 																		<Undo2 className="size-4" />
 																	)}
 																</Button>
-															)}
+															) : null}
 														</div>
 													</li>
 												)
@@ -285,10 +340,10 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 				)}
 			</div>
 			<nav
-				className="pointer-events-none fixed inset-x-0 bottom-0 z-30 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden"
+				className="sticky bottom-0 z-30 flex shrink-0 justify-center px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden"
 				aria-label="Navegação do resumo"
 			>
-				<div className="pointer-events-auto mx-auto flex w-fit items-center gap-1 rounded-full border border-white/10 bg-zinc-900/75 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl">
+				<div className="flex w-fit items-center gap-1 rounded-full border border-white/10 bg-zinc-900/35 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl">
 					<button
 						type="button"
 						aria-label="Metas"

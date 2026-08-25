@@ -126,7 +126,7 @@ export const CreateGoal = ({ setOpen }: Props) => {
 							/>
 						</div>
 					</div>
-					<div className="sticky bottom-0 z-10 flex items-center gap-3 bg-zinc-950">
+					<div className="sticky bottom-0 z-10 flex shrink-0 items-center gap-3 rounded-t-xl border border-white/10 bg-zinc-950/35 p-2 backdrop-blur-xl">
 						<DialogClose asChild>
 							<Button type="button" variant="secondary" className="flex-1">
 								Fechar
