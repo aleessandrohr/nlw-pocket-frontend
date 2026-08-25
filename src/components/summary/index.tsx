@@ -1,14 +1,17 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
 	CalendarDays,
 	CheckCircle2,
 	ChevronLeft,
 	ChevronRight,
 	ListChecks,
+	Loader2,
 	MoreHorizontal,
 	Plus,
+	Undo2,
 } from 'lucide-react'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { AccountHeader } from '@/components/account-header'
 import { PendingGoals } from '@/components/pending-goals'
 import { Button } from '@/components/ui/button'
@@ -17,6 +20,7 @@ import { InOrbitIcon } from '@/components/ui/in-orbit-icon'
 import { Progress, ProgressIndicator } from '@/components/ui/progress-bar'
 import { useAuth } from '@/contexts/auth'
 import { useWeek } from '@/contexts/week'
+import { deleteGoalCompletion } from '@/http/goals/delete-goal-completion'
 import { getSummary } from '@/http/summary/get-summary'
 import dayjs from '@/lib/dayjs'
 import { queryKeys } from '@/lib/query-keys'
@@ -30,9 +34,27 @@ type SummaryView = 'goals' | 'week'
 
 // Exibe o resumo semanal e mantém as ações da conta no cabeçalho próprio.
 export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
+	const queryClient = useQueryClient()
 	const { user } = useAuth()
 	const { goToNextWeek, goToPreviousWeek, isCurrentWeek, week } = useWeek()
 	const [view, setView] = useState<SummaryView>('goals')
+
+	const deleteGoalCompletionMutation = useMutation({
+		mutationFn: deleteGoalCompletion,
+		onSuccess: async () => {
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: queryKeys.summary.all() }),
+				queryClient.invalidateQueries({
+					queryKey: queryKeys.pendingGoals.all(),
+				}),
+			])
+
+			toast.success('Conclusão desmarcada com sucesso!')
+		},
+		onError: () => {
+			toast.error('Erro ao desmarcar conclusão!')
+		},
+	})
 
 	const { data: summary } = useQuery({
 		queryKey: queryKeys.summary.byWeek(week),
@@ -204,15 +226,49 @@ export const Summary = ({ onOpenCreateGoal, onOpenGoals }: SummaryProps) => {
 												const time = dayjs(goal.completedAt).format('HH:mm')
 
 												return (
-													<li key={goal.id} className="flex items-center gap-2">
-														<CheckCircle2 className="size-4 text-pink-500" />
-														<span className="text-sm text-zinc-400">
-															Você completou "
-															<span className="text-zinc-100">
-																{goal.title}
+													<li
+														key={goal.id}
+														className="flex min-h-8 items-center justify-between gap-3"
+													>
+														<div className="flex min-w-0 items-center gap-2">
+															<CheckCircle2 className="size-4 shrink-0 text-pink-500" />
+															<span className="text-sm text-zinc-400">
+																Você completou "
+																<span className="text-zinc-100">
+																	{goal.title}
+																</span>
+																" às{' '}
+																<span className="text-zinc-100">{time}</span>
 															</span>
-															" às <span className="text-zinc-100">{time}</span>
-														</span>
+														</div>
+														<div className="flex size-8 shrink-0 items-center justify-center">
+															{isCurrentWeek && !goal.isArchived && (
+																<Button
+																	variant="secondary"
+																	size="sm"
+																	type="button"
+																	className="size-8 p-0"
+																	aria-label={`Desmarcar conclusão de ${goal.title}`}
+																	title="Desmarcar conclusão"
+																	data-tooltip-id="tooltip"
+																	data-tooltip-content="Desmarcar conclusão"
+																	disabled={
+																		deleteGoalCompletionMutation.isPending
+																	}
+																	onClick={() =>
+																		deleteGoalCompletionMutation.mutate(goal.id)
+																	}
+																>
+																	{deleteGoalCompletionMutation.isPending &&
+																	deleteGoalCompletionMutation.variables ===
+																		goal.id ? (
+																		<Loader2 className="size-4 animate-spin" />
+																	) : (
+																		<Undo2 className="size-4" />
+																	)}
+																</Button>
+															)}
+														</div>
 													</li>
 												)
 											})}

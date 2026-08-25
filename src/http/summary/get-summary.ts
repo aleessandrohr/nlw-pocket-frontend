@@ -3,6 +3,7 @@ import { api } from '@/services/api'
 interface Goal {
 	id: string
 	title: string
+	isArchived: boolean
 	completedAt: Date
 }
 

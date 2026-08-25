@@ -43,4 +43,6 @@
 - **Impacto adicional:** corrigido o posicionamento global dos tooltips para aparecerem acima do cabeçalho sticky e fora de containers com overflow.
 - **Impacto adicional:** a semana selecionada agora é refletida no parâmetro `week` da URL e restaurada ao recarregar a página.
 - **Impacto adicional:** os cards agora recebem `completedToday` e bloqueiam visualmente a conclusão repetida da mesma meta no dia atual.
+- **Impacto adicional:** o histórico da semana atual agora permite desmarcar conclusões, enquanto semanas anteriores permanecem somente leitura.
+- **Impacto adicional:** o histórico mantém altura e alinhamento consistentes mesmo quando a ação de desmarcar não está disponível.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.
