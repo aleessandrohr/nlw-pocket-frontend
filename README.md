@@ -5,14 +5,9 @@ e visualizar o resumo da semana.
 
 ## Sobre o projeto
 
-O in.orbit nasceu durante a **Next Level Week**, da Rocketseat, como um
-projeto de aprendizado baseado no desafio do evento. Depois da experiência,
-continuei desenvolvendo e adaptando a aplicação para o meu portfólio.
-
-Esta versão é uma evolução do projeto original, com novas decisões de produto,
-regras de negócio, melhorias de segurança, refatorações e uma experiência de
-uso mais completa. A origem educacional e as referências da Rocketseat são
-mantidas nesta documentação.
+Esse projeto começou durante a **Next Level Week Pocket**, da Rocketseat. A
+primeira versão foi construída acompanhando o desafio do evento e acabou sendo
+um bom ponto de partida para estudar React e desenvolvimento web na prática.
 
 <p align="center">
   <img alt="in.orbit" src="./src/assets/logo.svg" width="180">
@@ -84,10 +79,9 @@ autenticados da API não são armazenados no cache offline.
 
 ## Origem
 
-O projeto foi desenvolvido inicialmente a partir da Next Level Week
-Pocket/in.orbit e mantém licença MIT. O layout de referência está no
+O ponto de partida do projeto foi a Next Level Week Pocket/in.orbit. O layout
+original pode ser encontrado no
 [Figma da Rocketseat](https://www.figma.com/community/file/1415093862269754302/nlw-pocket-js-in-orbit).
 
-As funcionalidades, refatorações, adaptações visuais e melhorias posteriores
-descritas neste README foram desenvolvidas para a evolução desta versão de
-portfólio.
+Depois do evento, o projeto ganhou novas funcionalidades, mudanças visuais e
+uma boa dose de refatoração. Esta versão continua sob licença MIT.
