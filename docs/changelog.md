@@ -65,6 +65,54 @@
 
 ## 2026-08-25
 
+- **Escopo:** identificação do período semanal
+- **Melhoria:** semanas dentro do mesmo mês agora exibem `dia inicial - dia final mês`, sem repetir o nome do mês.
+- **Validação:** Biome, TypeScript e `git diff --check` concluídos.
+
+## 2026-08-25
+
+- **Escopo:** tooltip global
+- **Melhoria:** reduzidos tamanho, padding, peso visual e intensidade do fundo para manter as dicas mais discretas.
+- **Validação:** Biome, TypeScript e `git diff --check` concluídos.
+
+## 2026-08-25
+
+- **Escopo:** hierarquia visual do cabeçalho semanal
+- **Melhoria:** logo e ações agora ficam na linha superior, enquanto o seletor de semanas fica isolado abaixo com os nomes completos dos meses.
+- **Validação:** Biome, TypeScript e `git diff --check` concluídos.
+
+## 2026-08-25
+
+- **Escopo:** ações do cabeçalho semanal
+- **Correção:** no histórico, o cadastro ocupa o espaço flexível, “Hoje” fica ao lado e o menu de opções permanece alinhado à direita.
+- **Validação:** Biome, TypeScript e `git diff --check` concluídos.
+
+## 2026-08-25
+
+- **Escopo:** layout do cabeçalho histórico
+- **Correção:** ao consultar semanas anteriores, a navegação da data e as ações agora ocupam linhas separadas, evitando que o botão de retorno comprima o intervalo semanal.
+- **Validação:** Biome, TypeScript e `git diff --check` concluídos.
+
+## 2026-08-25
+
+- **Escopo:** ação de retorno da navegação semanal
+- **Correção:** em telas maiores, “Hoje” agora usa somente o ícone com tooltip, reduzindo a ocupação horizontal e evitando compressão da data.
+- **Validação:** Biome, TypeScript e `git diff --check` concluídos.
+
+## 2026-08-25
+
+- **Escopo:** cabeçalho e navegação semanal
+- **Correção:** o botão “Hoje” foi movido para as ações do resumo, preservando a largura da data em telas menores.
+- **Validação:** Biome, TypeScript e `git diff --check` concluídos.
+
+## 2026-08-25
+
+- **Escopo:** diálogo de cadastro de metas
+- **Correção:** os campos do formulário agora usam uma área rolável própria, mantendo os botões “Fechar” e “Salvar” fixos no rodapé do diálogo.
+- **Validação:** Biome, TypeScript e `git diff --check` concluídos.
+
+## 2026-08-25
+
 - **Escopo:** segurança de autenticação e hospedagem
 - **Resumo:** login, cadastro e demo agora iniciam com token CSRF e usam a instância HTTP centralizada.
 - **Impacto:** token CSRF é removido da memória no logout; falhas públicas não tentam refresh e requisições têm timeout de 15 segundos.

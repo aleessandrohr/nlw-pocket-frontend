@@ -1,4 +1,10 @@
-import { ChevronLeft, ChevronRight, MoreHorizontal, Plus } from 'lucide-react'
+import {
+	CalendarDays,
+	ChevronLeft,
+	ChevronRight,
+	MoreHorizontal,
+	Plus,
+} from 'lucide-react'
 import { AccountHeader } from '@/components/account-header'
 import { Button } from '@/components/ui/button'
 import { InOrbitIcon } from '@/components/ui/in-orbit-icon'
@@ -27,18 +33,64 @@ export const SummaryHeader = ({
 	onOpenCreateGoal,
 	onOpenGoals,
 }: SummaryHeaderProps) => {
-	const { goToNextWeek, goToPreviousWeek, isCurrentWeek, week } = useWeek()
+	const { goToNextWeek, goToPreviousWeek, isCurrentWeek, setWeek, week } =
+		useWeek()
 
 	const startOfWeek = nowInAppTimeZone().startOf('day').day(0).add(week, 'week')
-	const firstDayOfWeek = startOfWeek.format('D MMM')
-	const lastDayOfWeek = startOfWeek.add(6, 'day').format('D MMM')
+	const endOfWeek = startOfWeek.add(6, 'day')
+	// Evita repetir o mês na mesma semana e mantém os dois meses quando necessário.
+	const weekLabel =
+		startOfWeek.month() === endOfWeek.month()
+			? `${startOfWeek.format('D')} - ${endOfWeek.format('D MMMM')}`
+			: `${startOfWeek.format('D MMMM')} - ${endOfWeek.format('D MMMM')}`
 
 	return (
 		<header className="sticky top-0 z-10 flex shrink-0 flex-col gap-6 bg-zinc-950 pb-4">
 			<AccountHeader user={user} />
-			<div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-				<div className="flex w-full min-w-0 items-center gap-2 md:w-auto">
+			<div className="flex flex-col gap-3">
+				<div className="flex min-w-0 items-center gap-2">
 					<InOrbitIcon />
+					<div className="ml-auto flex min-w-0 items-center gap-2">
+						<Button
+							className="min-w-0 flex-1 truncate md:flex-none"
+							size="sm"
+							type="button"
+							onClick={onOpenCreateGoal}
+						>
+							<Plus className="size-4" aria-hidden="true" />
+							Cadastrar meta
+						</Button>
+						{/* Mantém o retorno ao período atual ao lado do cadastro, sem texto extra. */}
+						{!isCurrentWeek && (
+							<Button
+								variant="secondary"
+								size="sm"
+								type="button"
+								className="size-9 shrink-0 p-0"
+								aria-label="Voltar para a semana atual"
+								title="Voltar para a semana atual"
+								onClick={() => setWeek(0)}
+								data-tooltip-id="tooltip"
+								data-tooltip-content="Voltar para a semana atual"
+							>
+								<CalendarDays className="size-4" aria-hidden="true" />
+							</Button>
+						)}
+						<Button
+							variant="secondary"
+							size="sm"
+							type="button"
+							className="size-9 shrink-0 p-0"
+							aria-label="Mais opções de meta"
+							onClick={onOpenGoals}
+							data-tooltip-id="tooltip"
+							data-tooltip-content="Mais opções de meta"
+						>
+							<MoreHorizontal className="size-4" aria-hidden="true" />
+						</Button>
+					</div>
+				</div>
+				<div className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/30 px-2 py-2">
 					<Button
 						variant="secondary"
 						size="sm"
@@ -51,8 +103,8 @@ export const SummaryHeader = ({
 					>
 						<ChevronLeft className="size-4" aria-hidden="true" />
 					</Button>
-					<span className="min-w-0 flex-1 whitespace-nowrap text-center font-semibold text-lg capitalize">
-						{firstDayOfWeek} - {lastDayOfWeek}
+					<span className="min-w-0 flex-1 truncate whitespace-nowrap text-center font-semibold text-sm capitalize sm:text-lg">
+						{weekLabel}
 					</span>
 					<Button
 						variant="secondary"
@@ -66,29 +118,6 @@ export const SummaryHeader = ({
 						data-tooltip-content="Próxima semana"
 					>
 						<ChevronRight className="size-4" aria-hidden="true" />
-					</Button>
-				</div>
-				<div className="order-first flex w-full items-center gap-2 md:order-none md:w-auto">
-					<Button
-						className="min-w-0 flex-1 truncate md:flex-none"
-						size="sm"
-						type="button"
-						onClick={onOpenCreateGoal}
-					>
-						<Plus className="size-4" aria-hidden="true" />
-						Cadastrar meta
-					</Button>
-					<Button
-						variant="secondary"
-						size="sm"
-						type="button"
-						className="size-9 shrink-0 p-0"
-						aria-label="Mais opções de meta"
-						onClick={onOpenGoals}
-						data-tooltip-id="tooltip"
-						data-tooltip-content="Mais opções de meta"
-					>
-						<MoreHorizontal className="size-4" aria-hidden="true" />
 					</Button>
 				</div>
 			</div>
