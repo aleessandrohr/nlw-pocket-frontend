@@ -126,7 +126,8 @@ export const CreateGoal = ({ setOpen }: Props) => {
 							/>
 						</div>
 					</div>
-					<div className="sticky bottom-0 z-10 flex shrink-0 items-center gap-3 rounded-t-xl border border-white/10 bg-zinc-950/35 p-2 backdrop-blur-xl">
+					{/* Mantém as ações do formulário limpas, sem a cápsula reservada aos menus glass. */}
+					<div className="flex shrink-0 items-center gap-3 pt-2">
 						<DialogClose asChild>
 							<Button type="button" variant="secondary" className="flex-1">
 								Fechar

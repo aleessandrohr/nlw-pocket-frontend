@@ -6,13 +6,15 @@ import { env } from '@/schemas/env'
 
 let csrfTokenInMemory: string | null = null
 
-export const setCsrfTokenInMemory = (csrfToken: string) => {
+// Mantém o token apenas em memória e permite removê-lo ao encerrar a sessão.
+export const setCsrfTokenInMemory = (csrfToken: string | null) => {
 	csrfTokenInMemory = csrfToken
 }
 
 const api = axios.create({
 	baseURL: env.VITE_BACKEND_URL,
 	withCredentials: true,
+	timeout: 15_000,
 })
 
 api.interceptors.request.use(
@@ -39,6 +41,7 @@ const processQueue = (error: unknown) => {
 	for (const prom of failedQueue) {
 		if (error) {
 			prom.reject(error)
+
 			continue
 		}
 
@@ -55,7 +58,10 @@ api.interceptors.response.use(
 
 		if (
 			error.response?.status === 401 &&
-			originalRequest.url !== '/auth/refresh-token'
+			originalRequest &&
+			originalRequest.url !== '/auth/refresh-token' &&
+			!originalRequest.skipAuthRefresh &&
+			!originalRequest._retry
 		) {
 			if (isRefreshing) {
 				return new Promise((resolve, reject) => {

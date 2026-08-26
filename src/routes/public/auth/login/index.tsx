@@ -8,7 +8,7 @@ import logo from '@/assets/logo.svg'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/contexts/auth'
-import { getCsrfToken } from '@/http/auth/csrf-token/get'
+import { refreshCsrfToken } from '@/http/auth/csrf-token/refresh'
 import { login } from '@/http/auth/login/post'
 import { type LoginForm, loginFormSchema } from '@/schemas/login-form'
 
@@ -24,11 +24,14 @@ export const LoginRoute = () => {
 	})
 
 	const loginMutation = useMutation({
-		mutationFn: (data: LoginForm) => login(data),
-		onSuccess: async user => {
-			toast.success('Entrou com sucesso!')
+		mutationFn: async (data: LoginForm) => {
+			const csrfToken = await refreshCsrfToken()
+			const user = await login(data)
 
-			const { csrfToken } = await getCsrfToken()
+			return { csrfToken, user }
+		},
+		onSuccess: ({ csrfToken, user }) => {
+			toast.success('Entrou com sucesso!')
 
 			loginInMemory(user, csrfToken)
 		},

@@ -62,3 +62,12 @@
 - **Impacto adicional:** tabs lineares e liquid glass agora compartilham uma primitive acessível, e o tooltip global ganhou superfície translúcida, cantos maiores e tipografia consistente.
 - **Correção:** a fila de renovação de token agora encerra todas as requisições em espera quando a renovação falha, e confirmações exibem o texto pendente da própria ação.
 - **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.
+
+## 2026-08-25
+
+- **Escopo:** segurança de autenticação e hospedagem
+- **Resumo:** login, cadastro e demo agora iniciam com token CSRF e usam a instância HTTP centralizada.
+- **Impacto:** token CSRF é removido da memória no logout; falhas públicas não tentam refresh e requisições têm timeout de 15 segundos.
+- **Impacto adicional:** Axios, React Router, Vite e PostCSS foram atualizados; a hospedagem Vercel ganhou headers compatíveis com o iframe da demo.
+- **Correções:** fetchers não registram erros HTTP completos, a conta pessoal mantém a saída alinhada, dialogs encaminham refs ao Radix e o fallback do Vite 8 evita `SERVER_FORWARD_CONSOLE` indefinido.
+- **Validação:** Biome, TypeScript, build e `git diff --check` concluídos.

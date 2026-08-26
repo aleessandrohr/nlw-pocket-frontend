@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/contexts/auth'
 import { createUser } from '@/http/auth/create-user/post'
-import { getCsrfToken } from '@/http/auth/csrf-token/get'
+import { refreshCsrfToken } from '@/http/auth/csrf-token/refresh'
 import {
 	type CreateUserForm,
 	createUserFormSchema,
@@ -35,16 +35,18 @@ export const CreateUserRoute = () => {
 	const isPasswordMatch = password === confirmPassword
 
 	const createUserMutation = useMutation({
-		mutationFn: (data: CreateUserForm) =>
-			createUser({
+		mutationFn: async (data: CreateUserForm) => {
+			const csrfToken = await refreshCsrfToken()
+			const user = await createUser({
 				name: data.name,
 				email: data.email,
 				password: data.password,
-			}),
-		onSuccess: async user => {
-			toast.success('Usuário criado com sucesso!')
+			})
 
-			const { csrfToken } = await getCsrfToken()
+			return { csrfToken, user }
+		},
+		onSuccess: ({ csrfToken, user }) => {
+			toast.success('Usuário criado com sucesso!')
 
 			loginInMemory(user, csrfToken)
 		},

@@ -1,6 +1,5 @@
-import axios from 'axios'
 import type { User } from '@/contexts/auth'
-import { env } from '@/schemas/env'
+import { api } from '@/services/api'
 
 interface LoginRequest {
 	name: string
@@ -11,16 +10,14 @@ interface LoginRequest {
 type LoginResponse = User
 
 export const createUser = async ({ name, email, password }: LoginRequest) => {
-	const response = await axios.post<LoginResponse>(
-		`${env.VITE_BACKEND_URL}/auth/create-user`,
+	const response = await api.post<LoginResponse>(
+		'/auth/create-user',
 		{
 			name,
 			email,
 			password,
 		},
-		{
-			withCredentials: true,
-		}
+		{ skipAuthRefresh: true }
 	)
 
 	return response.data

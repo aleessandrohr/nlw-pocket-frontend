@@ -5,7 +5,7 @@ import logo from '@/assets/logo.svg'
 import { Loading } from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/auth'
-import { getCsrfToken } from '@/http/auth/csrf-token/get'
+import { refreshCsrfToken } from '@/http/auth/csrf-token/refresh'
 import { createDemoSession } from '@/http/auth/demo/post'
 
 // Inicia a sessão demo, obtém o CSRF e encaminha o visitante para o resumo.
@@ -39,8 +39,8 @@ export const DemoRoute = () => {
 
 		const startDemo = async () => {
 			try {
+				const csrfToken = await refreshCsrfToken()
 				const demoUser = await createDemoSession()
-				const { csrfToken } = await getCsrfToken()
 
 				loginInMemory(demoUser, csrfToken, false)
 				navigate('/summary', { replace: true })

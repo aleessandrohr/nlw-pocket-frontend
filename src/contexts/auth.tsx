@@ -46,6 +46,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
 	const queryClient = useQueryClient()
+
 	const navigate = useNavigate()
 	const location = useLocation()
 	const { setWeek } = useWeek()
@@ -70,6 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		(redirectTo = '/auth/login') => {
 			setUser(null)
 			setCsrfToken(null)
+			setCsrfTokenInMemory(null)
 			setWeek(0)
 
 			queryClient.clear()

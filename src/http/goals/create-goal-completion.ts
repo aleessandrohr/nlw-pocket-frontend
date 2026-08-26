@@ -10,16 +10,10 @@ export const createGoalCompletion = async ({
 	goalId,
 	week,
 }: CreateGoalCompletionRequest) => {
-	try {
-		const response = await api.post('/completion', {
-			goalId,
-			week,
-		})
+	const response = await api.post('/completion', {
+		goalId,
+		week,
+	})
 
-		return response.data
-	} catch (error) {
-		console.error(error)
-
-		throw error
-	}
+	return response.data
 }

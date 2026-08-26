@@ -17,6 +17,13 @@ segredos, senhas ou tokens privados nessa variável.
 [`vite.config.ts`](../vite.config.ts) instala o plugin React e o alias `@`
 para `src`. O build é estático e usa `index.html` como entrada.
 
+## Headers de hospedagem
+
+O `vercel.json` mantém o fallback do SPA e envia headers que bloqueiam objetos
+embutidos, restringem permissões de dispositivo, evitam MIME sniffing e reduzem
+o referrer. Ele não envia `X-Frame-Options` nem restringe `frame-ancestors`,
+pois a demonstração precisa continuar abrindo no iframe do portfólio.
+
 ## Biome e TypeScript
 
 O Biome 2.x valida apenas arquivos de código em `src`, com exceção dos

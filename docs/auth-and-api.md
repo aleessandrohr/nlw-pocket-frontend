@@ -7,12 +7,13 @@ CSRF em memória. Ao iniciar, chama `GET /user/profile` e
 `GET /auth/csrf-token`; se a sessão falhar, redireciona para o login, exceto
 durante a inicialização da rota `/demo`.
 
-O login e o cadastro recebem o usuário da API, obtêm o CSRF e atualizam o
-contexto. O logout chama `POST /auth/logout`, limpa o estado local e retorna a
-`/auth/login`.
+Login, cadastro e demo obtêm primeiro um token CSRF e só então enviam a
+mutation que inicia a sessão. O token e o usuário permanecem apenas em memória.
+O logout chama `POST /auth/logout`, limpa token, estado local e cache e retorna
+a `/auth/login`.
 
-A rota `/demo` chama `POST /auth/demo`, obtém o CSRF em seguida e registra o
-usuário temporário no contexto antes de navegar para `/summary`. O tipo
+A rota `/demo` obtém o CSRF, chama `POST /auth/demo` e registra o usuário
+temporário no contexto antes de navegar para `/summary`. O tipo
 `User` mantém `isDemo` e `demoExpiresAt` para a interface identificar a sessão
 temporária. Os cookies de autenticação são mantidos pelo Axios com
 `withCredentials: true`.
@@ -25,6 +26,10 @@ temporária. Os cookies de autenticação são mantidos pelo Axios com
 - `withCredentials: true`;
 - header `X-CSRF-TOKEN` em mutations;
 - interceptor que tenta renovar a sessão em respostas `401`.
+
+Chamadas públicas marcam `skipAuthRefresh`, evitando que uma credencial
+inválida dispare tentativa de refresh. O cliente também usa timeout de 15
+segundos e limita cada requisição original a uma renovação.
 
 O refresh chama primeiro o endpoint CSRF e depois
 `POST /auth/refresh-token`. O token CSRF nunca é persistido em storage do

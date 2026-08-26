@@ -109,7 +109,13 @@ export const AccountHeader = ({ user }: AccountHeaderProps) => {
 					onOpenChange={setIsCreateAccountDialogOpen}
 				/>
 			)}
-			<header className="flex flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+			<header
+				className={`rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 ${
+					user.isDemo
+						? 'flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'
+						: 'flex items-center justify-between gap-3'
+				}`}
+			>
 				<div className="flex min-w-0 items-center gap-3">
 					<Users className="size-5 shrink-0 text-zinc-400" aria-hidden="true" />
 					<div className="min-w-0">
@@ -150,7 +156,7 @@ export const AccountHeader = ({ user }: AccountHeaderProps) => {
 						</div>
 					</div>
 				) : (
-					<div className="flex w-full justify-end sm:w-auto">
+					<div className="shrink-0">
 						<Button
 							variant="secondary"
 							size="sm"
