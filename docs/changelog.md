@@ -65,6 +65,13 @@
 
 ## 2026-08-25
 
+- **Escopo:** instalação e hospedagem do frontend
+- **Melhoria:** adicionada configuração PWA com manifest, ícone, metadados mobile, service worker com atualização automática e pré-cache apenas dos assets estáticos.
+- **Impacto:** o in.orbit pode ser instalado como aplicativo sem armazenar respostas autenticadas da API no cache offline.
+- **Validação:** build de produção e `git diff --check` concluídos.
+
+## 2026-08-25
+
 - **Escopo:** identificação do período semanal
 - **Melhoria:** semanas dentro do mesmo mês agora exibem `dia inicial - dia final mês`, sem repetir o nome do mês.
 - **Validação:** Biome, TypeScript e `git diff --check` concluídos.

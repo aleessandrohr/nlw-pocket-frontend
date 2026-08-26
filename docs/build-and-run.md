@@ -17,6 +17,9 @@ bun run preview
 ```
 
 O build gera `dist/`. O `preview` serve os arquivos gerados localmente.
+Para verificar a instalação da PWA, use o `preview` em HTTPS ou um ambiente
+publicado; service workers não são ativados em páginas HTTP comuns fora de
+`localhost`.
 
 ## Deploy
 

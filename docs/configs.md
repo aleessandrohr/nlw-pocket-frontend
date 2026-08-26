@@ -17,6 +17,11 @@ segredos, senhas ou tokens privados nessa variável.
 [`vite.config.ts`](../vite.config.ts) instala o plugin React e o alias `@`
 para `src`. O build é estático e usa `index.html` como entrada.
 
+O Vite também gera a PWA por meio do `vite-plugin-pwa`: o manifest e o
+service worker permitem instalar o in.orbit como aplicativo. O cache padrão
+fica restrito aos assets estáticos do bundle; respostas autenticadas da API
+não são armazenadas pelo service worker.
+
 ## Headers de hospedagem
 
 O `vercel.json` mantém o fallback do SPA e envia headers que bloqueiam objetos
