@@ -8,7 +8,7 @@ const tabsList = tv({
 		variant: {
 			line: 'border-b border-zinc-800',
 			glass:
-				'w-fit gap-1 rounded-full border border-white/10 bg-zinc-900/50 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl',
+				'w-fit gap-1.5 rounded-full border border-white/10 bg-zinc-900/50 p-2 shadow-2xl shadow-black/40 backdrop-blur-xl',
 		},
 	},
 	defaultVariants: {
@@ -21,7 +21,7 @@ const tabsTrigger = tv({
 	variants: {
 		variant: {
 			line: 'border-b-2 px-3 py-3',
-			glass: 'rounded-full px-3 py-2 text-xs',
+			glass: 'min-h-11 rounded-full px-4 py-2.5 text-sm',
 		},
 		active: {
 			true: '',
