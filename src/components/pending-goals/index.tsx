@@ -102,66 +102,73 @@ export const PendingGoals = () => {
 				<p className="mt-1 text-xs text-zinc-500">
 					{canCompleteGoal
 						? 'Registre uma conclusão para atualizar seu progresso.'
-						: 'Semanas anteriores são apenas histórico.'}
+						: 'As metas só podem ser concluídas na semana atual.'}
 				</p>
 			</div>
 			<div className="grid gap-3 sm:grid-cols-2">
-				{sortedPendingGoals.map(goal => {
-					const isCompletedThisWeek =
-						goal.completionCount >= goal.desiredWeeklyFrequency
-					const isDisabled =
-						!canCompleteGoal || isCompletedThisWeek || goal.completedToday
-					const isCompleting =
-						createGoalCompletionMutation.isPending &&
-						createGoalCompletionMutation.variables?.goalId === goal.id
+				{sortedPendingGoals.length === 0 ? (
+					<p className="rounded-xl border border-zinc-800 border-dashed px-4 py-8 text-center text-sm text-zinc-500 sm:col-span-2">
+						Nenhuma meta disponível nesta semana. Use “Cadastrar meta” para
+						criar uma nova.
+					</p>
+				) : (
+					sortedPendingGoals.map(goal => {
+						const isCompletedThisWeek =
+							goal.completionCount >= goal.desiredWeeklyFrequency
+						const isDisabled =
+							!canCompleteGoal || isCompletedThisWeek || goal.completedToday
+						const isCompleting =
+							createGoalCompletionMutation.isPending &&
+							createGoalCompletionMutation.variables?.goalId === goal.id
 
-					return (
-						<button
-							key={goal.id}
-							type="button"
-							disabled={isDisabled || isCompleting}
-							onClick={() => handleCompleteGoal(goal.id)}
-							aria-label={
-								!canCompleteGoal
-									? `${goal.title}, somente histórico`
-									: goal.completedToday
-										? `${goal.title}, já concluída hoje`
-										: isCompletedThisWeek
-											? `${goal.title}, meta concluída nesta semana`
-											: `Concluir meta ${goal.title}`
-							}
-							title={
-								!canCompleteGoal
-									? 'Semanas anteriores são apenas histórico!'
-									: goal.completedToday
-										? 'Meta já concluída hoje!'
-										: isCompletedThisWeek
-											? 'Meta concluída nesta semana!'
-											: undefined
-							}
-							className="group flex min-w-0 items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-left outline-none transition-colors hover:border-violet-500/50 hover:bg-zinc-900 focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/30 disabled:cursor-not-allowed disabled:opacity-50"
-						>
-							<span className="min-w-0">
-								<span className="block truncate font-medium text-sm text-zinc-100">
-									{goal.title}
+						return (
+							<button
+								key={goal.id}
+								type="button"
+								disabled={isDisabled || isCompleting}
+								onClick={() => handleCompleteGoal(goal.id)}
+								aria-label={
+									!canCompleteGoal
+										? `${goal.title}. As metas só podem ser concluídas na semana atual.`
+										: goal.completedToday
+											? `${goal.title}, já concluída hoje`
+											: isCompletedThisWeek
+												? `${goal.title}, meta concluída nesta semana`
+												: `Concluir meta ${goal.title}`
+								}
+								title={
+									!canCompleteGoal
+										? 'As metas só podem ser concluídas na semana atual.'
+										: goal.completedToday
+											? 'Meta já concluída hoje!'
+											: isCompletedThisWeek
+												? 'Meta concluída nesta semana!'
+												: undefined
+								}
+								className="group flex min-w-0 items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-left outline-none transition-colors hover:border-violet-500/50 hover:bg-zinc-900 focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+							>
+								<span className="min-w-0">
+									<span className="block truncate font-medium text-sm text-zinc-100">
+										{goal.title}
+									</span>
+									<span className="mt-1 block text-xs text-zinc-500">
+										{goal.completionCount}/{goal.desiredWeeklyFrequency}{' '}
+										conclusões nesta semana
+									</span>
 								</span>
-								<span className="mt-1 block text-xs text-zinc-500">
-									{goal.completionCount}/{goal.desiredWeeklyFrequency}{' '}
-									conclusões nesta semana
+								<span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 transition-colors group-hover:bg-violet-500/15 group-hover:text-violet-300">
+									{isCompleting ? (
+										<Loader2 className="size-4 animate-spin" />
+									) : isCompletedThisWeek || goal.completedToday ? (
+										<CheckCircle2 className="size-4 text-emerald-400" />
+									) : (
+										<Plus className="size-4" />
+									)}
 								</span>
-							</span>
-							<span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 transition-colors group-hover:bg-violet-500/15 group-hover:text-violet-300">
-								{isCompleting ? (
-									<Loader2 className="size-4 animate-spin" />
-								) : isCompletedThisWeek || goal.completedToday ? (
-									<CheckCircle2 className="size-4 text-emerald-400" />
-								) : (
-									<Plus className="size-4" />
-								)}
-							</span>
-						</button>
-					)
-				})}
+							</button>
+						)
+					})
+				)}
 			</div>
 		</div>
 	)

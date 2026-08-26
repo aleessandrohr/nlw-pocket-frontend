@@ -15,6 +15,7 @@ export const EmptyGoals = () => {
 		mutationFn: logout,
 		onSuccess: () => {
 			toast.success('Saiu com sucesso!')
+
 			logoutMutation.reset()
 
 			logoutInMemory()

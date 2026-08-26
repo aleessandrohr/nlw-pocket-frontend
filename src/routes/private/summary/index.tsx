@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { CreateGoal } from '@/components/create-goal'
-import { EmptyGoals } from '@/components/empty-goals'
 import { GoalsDialog } from '@/components/goals-dialog'
 import { Loading } from '@/components/loading'
 import { Summary } from '@/components/summary'
@@ -36,21 +35,17 @@ export const SummaryRoute = () => {
 
 	return (
 		<Dialog open={open} defaultOpen={false} onOpenChange={setOpen}>
-			{summary.total > 0 ? (
-				<Summary
-					summary={summary}
-					onOpenCreateGoal={() => {
-						setDialogContent('create')
-						setOpen(true)
-					}}
-					onOpenGoals={() => {
-						setDialogContent('goals')
-						setOpen(true)
-					}}
-				/>
-			) : (
-				<EmptyGoals />
-			)}
+			<Summary
+				summary={summary}
+				onOpenCreateGoal={() => {
+					setDialogContent('create')
+					setOpen(true)
+				}}
+				onOpenGoals={() => {
+					setDialogContent('goals')
+					setOpen(true)
+				}}
+			/>
 			{dialogContent === 'create' ? (
 				<CreateGoal setOpen={setOpen} />
 			) : (
