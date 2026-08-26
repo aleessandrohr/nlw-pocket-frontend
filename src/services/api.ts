@@ -51,6 +51,26 @@ const processQueue = (error: unknown) => {
 	failedQueue = []
 }
 
+const refreshSession = async () => {
+	const { csrfToken } = await getCsrfToken()
+
+	setCsrfTokenInMemory(csrfToken)
+
+	await getNewAccessToken()
+}
+
+// Abas compartilham os cookies, mas não o estado `isRefreshing`. O lock evita
+// que duas delas rotacionem o mesmo refresh token ao mesmo tempo.
+const refreshSessionAcrossTabs = async () => {
+	if (typeof navigator !== 'undefined' && navigator.locks) {
+		await navigator.locks.request('pocket-auth-refresh', refreshSession)
+
+		return
+	}
+
+	await refreshSession()
+}
+
 api.interceptors.response.use(
 	response => response,
 	async error => {
@@ -73,11 +93,7 @@ api.interceptors.response.use(
 			isRefreshing = true
 
 			try {
-				const { csrfToken } = await getCsrfToken()
-
-				setCsrfTokenInMemory(csrfToken)
-
-				await getNewAccessToken()
+				await refreshSessionAcrossTabs()
 
 				processQueue(null)
 

@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 tsconfig.*.tsbuildinfo
+
+# files
+*.env*
+!.env.example

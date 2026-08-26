@@ -1,4 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
 import {
 	createContext,
 	type ReactNode,
@@ -44,6 +45,8 @@ interface AuthProviderProps {
 	children: ReactNode
 }
 
+const SESSION_CHECK_RETRY_DELAYS = [1_000, 2_000]
+
 export function AuthProvider({ children }: AuthProviderProps) {
 	const queryClient = useQueryClient()
 
@@ -53,6 +56,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 	const [user, setUser] = useState<User | null | undefined>(undefined)
 	const [csrfToken, setCsrfToken] = useState<string | null>(null)
+	const [sessionCheckAttempt, setSessionCheckAttempt] = useState(0)
+	const [sessionCheckFailed, setSessionCheckFailed] = useState(false)
 
 	const loginInMemory = useCallback(
 		async (user: User, csrfToken: string, redirect = true) => {
@@ -89,21 +94,59 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	)
 
 	useEffect(() => {
-		if (user !== undefined) return
+		if (user !== undefined || sessionCheckFailed) return
+
+		let retryTimer: ReturnType<typeof setTimeout> | undefined
+		let isCancelled = false
 
 		const checkSession = async () => {
 			try {
 				const user = await getUserProfile()
 				const { csrfToken } = await getCsrfToken()
 
+				if (isCancelled) return
+
 				loginInMemory(user, csrfToken, false)
-			} catch (_error) {
-				logoutInMemory()
+			} catch (error) {
+				if (isCancelled) return
+
+				const isUnauthorized =
+					axios.isAxiosError(error) && error.response?.status === 401
+
+				if (isUnauthorized) {
+					logoutInMemory()
+
+					return
+				}
+
+				const retryDelay = SESSION_CHECK_RETRY_DELAYS[sessionCheckAttempt]
+
+				if (retryDelay !== undefined) {
+					retryTimer = setTimeout(() => {
+						setSessionCheckAttempt(attempt => attempt + 1)
+					}, retryDelay)
+
+					return
+				}
+
+				setSessionCheckFailed(true)
 			}
 		}
 
-		checkSession()
-	}, [logoutInMemory, loginInMemory, user])
+		void checkSession()
+
+		return () => {
+			isCancelled = true
+
+			if (retryTimer) clearTimeout(retryTimer)
+		}
+	}, [
+		logoutInMemory,
+		loginInMemory,
+		sessionCheckAttempt,
+		sessionCheckFailed,
+		user,
+	])
 
 	useEffect(() => {
 		if (!csrfToken) return
@@ -113,6 +156,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 	const isLoading = user === undefined
 	const isAuthenticated = !!user
+
+	if (isLoading && sessionCheckFailed) {
+		return (
+			<div className="flex h-dvh flex-col items-center justify-center gap-4 px-5 text-center">
+				<p className="text-sm text-zinc-400">
+					Não foi possível verificar sua sessão. Tente novamente.
+				</p>
+				<button
+					type="button"
+					className="rounded-md bg-violet-500 px-4 py-2 font-medium text-sm text-white hover:bg-violet-600"
+					onClick={() => {
+						setSessionCheckFailed(false)
+						setSessionCheckAttempt(attempt => attempt + 1)
+					}}
+				>
+					Tentar novamente
+				</button>
+			</div>
+		)
+	}
 
 	if (isLoading) return <Loading />
 
