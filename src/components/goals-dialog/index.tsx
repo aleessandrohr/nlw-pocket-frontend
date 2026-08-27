@@ -210,7 +210,7 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 
 	return (
 		<DialogContent>
-			<div className="relative flex h-full flex-col gap-6">
+			<div className="relative flex h-full flex-col gap-4 md:gap-6">
 				<div className="flex flex-col gap-3">
 					<div className="flex items-center justify-between">
 						<DialogTitle>Minhas metas</DialogTitle>
@@ -236,7 +236,7 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 					id="goals-tab-panel"
 					role="tabpanel"
 					aria-label={filter === 'active' ? 'Metas ativas' : 'Metas arquivadas'}
-					className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-2 pb-6"
+					className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-1 pb-2"
 				>
 					{isLoading && (
 						<div className="flex h-full items-center justify-center text-zinc-500">
@@ -276,7 +276,7 @@ export const GoalsDialog = ({ open }: GoalsDialogProps) => {
 					)}
 				</div>
 				<nav
-					className="sticky bottom-2 z-10 flex shrink-0 justify-center px-4 pt-2 md:hidden"
+					className="sticky bottom-0 z-10 flex shrink-0 justify-center px-2 pt-1 pb-1 md:hidden"
 					aria-label="Filtro de metas"
 				>
 					<GoalFilterTabs
