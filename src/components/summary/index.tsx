@@ -100,7 +100,7 @@ export const Summary = ({
 				id="summary-tab-panel"
 				role="tabpanel"
 				aria-label={view === 'goals' ? 'Metas da semana' : 'Histórico semanal'}
-				className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-2 pb-6"
+				className="flex min-h-0 flex-1 flex-col overflow-hidden pt-2 pb-6"
 			>
 				{view === 'goals' ? (
 					<PendingGoals />

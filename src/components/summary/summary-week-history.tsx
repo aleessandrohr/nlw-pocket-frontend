@@ -87,50 +87,54 @@ export const SummaryWeekHistory = ({
 	const { isCurrentWeek } = useWeek()
 	const now = nowInAppTimeZone()
 
-	if (!goalsPerDay) {
-		return (
-			<p className="text-sm text-zinc-500">
-				Nenhuma conclusão registrada nesta semana.
-			</p>
-		)
-	}
-
 	return (
-		<div className="flex flex-col gap-6">
-			<h2 className="font-medium text-xl">Sua semana</h2>
-			{Object.entries(goalsPerDay).map(([date, completions]) => {
-				const civilDate = toAppCivilDate(date)
+		<div className="flex min-h-0 flex-1 flex-col gap-6">
+			<h2 className="shrink-0 font-medium text-xl">Sua semana</h2>
+			<div className="scrollbar-modern min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1 pb-2">
+				{!goalsPerDay ? (
+					<p className="text-sm text-zinc-500">
+						Nenhuma conclusão registrada nesta semana.
+					</p>
+				) : (
+					<div className="flex flex-col gap-6">
+						{Object.entries(goalsPerDay).map(([date, completions]) => {
+							const civilDate = toAppCivilDate(date)
 
-				return (
-					<div key={date} className="flex flex-col gap-4">
-						<h3 className="font-medium">
-							<span className="capitalize">{civilDate.format('dddd')}</span>{' '}
-							<span className="text-xs text-zinc-400">
-								({civilDate.format('D [de] MMMM')})
-							</span>
-						</h3>
-						<ul className="flex flex-col gap-3">
-							{completions.map(completion => {
-								const canUndo =
-									isCurrentWeek &&
-									!completion.isArchived &&
-									toAppTimeZone(completion.completedAt).isSame(now, 'day')
+							return (
+								<div key={date} className="flex flex-col gap-4">
+									<h3 className="font-medium">
+										<span className="capitalize">
+											{civilDate.format('dddd')}
+										</span>{' '}
+										<span className="text-xs text-zinc-400">
+											({civilDate.format('D [de] MMMM')})
+										</span>
+									</h3>
+									<ul className="flex flex-col gap-3">
+										{completions.map(completion => {
+											const canUndo =
+												isCurrentWeek &&
+												!completion.isArchived &&
+												toAppTimeZone(completion.completedAt).isSame(now, 'day')
 
-								return (
-									<CompletionHistoryItem
-										key={completion.id}
-										completion={completion}
-										canUndo={canUndo}
-										isUndoPending={isUndoPending}
-										isUndoing={undoingCompletionId === completion.id}
-										onUndo={onUndo}
-									/>
-								)
-							})}
-						</ul>
+											return (
+												<CompletionHistoryItem
+													key={completion.id}
+													completion={completion}
+													canUndo={canUndo}
+													isUndoPending={isUndoPending}
+													isUndoing={undoingCompletionId === completion.id}
+													onUndo={onUndo}
+												/>
+											)
+										})}
+									</ul>
+								</div>
+							)
+						})}
 					</div>
-				)
-			})}
+				)}
+			</div>
 		</div>
 	)
 }
