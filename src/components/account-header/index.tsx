@@ -109,24 +109,21 @@ export const AccountHeader = ({ user }: AccountHeaderProps) => {
 					onOpenChange={setIsCreateAccountDialogOpen}
 				/>
 			)}
-			<header
-				className={`rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 ${
-					user.isDemo
-						? 'flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'
-						: 'flex items-center justify-between gap-3'
-				}`}
-			>
-				<div className="flex min-w-0 items-center gap-3">
-					<Users className="size-5 shrink-0 text-zinc-400" aria-hidden="true" />
-					<div className="min-w-0">
-						<p className="truncate font-medium text-zinc-100">{user.name}</p>
-						<p className="text-xs text-zinc-400">
-							{user.isDemo ? 'Conta demonstração' : 'Conta pessoal'}
-						</p>
+			{user.isDemo ? (
+				<header className="flex flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+					<div className="flex min-w-0 items-center gap-3">
+						<Users
+							className="size-5 shrink-0 text-zinc-400"
+							aria-hidden="true"
+						/>
+						<div className="min-w-0">
+							<p className="truncate font-medium text-zinc-100">{user.name}</p>
+							<p className="text-xs text-zinc-400">
+								{user.isDemo ? 'Conta demonstração' : 'Conta pessoal'}
+							</p>
+						</div>
 					</div>
-				</div>
 
-				{user.isDemo ? (
 					<div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end">
 						{!isExpired && (
 							<Button
@@ -155,27 +152,26 @@ export const AccountHeader = ({ user }: AccountHeaderProps) => {
 							)}
 						</div>
 					</div>
-				) : (
-					<div className="shrink-0">
-						<Button
-							variant="secondary"
-							size="sm"
-							type="button"
-							aria-label="Sair"
-							data-tooltip-id="tooltip"
-							data-tooltip-content="Sair"
-							disabled={logoutMutation.isPending || logoutMutation.isSuccess}
-							onClick={() => logoutMutation.mutate()}
-						>
-							{logoutMutation.isPending ? (
-								<Loader2 className="size-4 animate-spin" />
-							) : (
-								<LogOut className="size-4" />
-							)}
-						</Button>
-					</div>
-				)}
-			</header>
+				</header>
+			) : (
+				<Button
+					variant="secondary"
+					size="sm"
+					type="button"
+					className="size-9 shrink-0 p-0"
+					aria-label="Sair"
+					data-tooltip-id="tooltip"
+					data-tooltip-content="Sair"
+					disabled={logoutMutation.isPending || logoutMutation.isSuccess}
+					onClick={() => logoutMutation.mutate()}
+				>
+					{logoutMutation.isPending ? (
+						<Loader2 className="size-4 animate-spin" />
+					) : (
+						<LogOut className="size-4" />
+					)}
+				</Button>
+			)}
 		</>
 	)
 }

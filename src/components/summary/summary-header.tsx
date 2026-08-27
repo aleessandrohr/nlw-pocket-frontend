@@ -46,10 +46,11 @@ export const SummaryHeader = ({
 
 	return (
 		<header className="sticky top-0 z-10 flex shrink-0 flex-col gap-6 bg-zinc-950 pb-4">
-			<AccountHeader user={user} />
+			{user.isDemo && <AccountHeader user={user} />}
 			<div className="flex flex-col gap-3">
 				<div className="flex min-w-0 items-center gap-2">
 					<InOrbitIcon />
+					{!user.isDemo && <AccountHeader user={user} />}
 					<div className="ml-auto flex min-w-0 items-center gap-2">
 						<Button
 							className="min-w-0 flex-1 truncate md:flex-none"
